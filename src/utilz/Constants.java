@@ -23,6 +23,9 @@ public class Constants {
 
 		}
 
+
+		
+
 		public static class VolumeButtons {
 			public static final int VOLUME_DEFAULT_WIDTH = 28;
 			public static final int VOLUME_DEFAULT_HEIGHT = 44;
