@@ -9,10 +9,7 @@ import entities.Player;
 import levels.LevelManager;
 import main.Game;
 import ui.PauseOverlay;
-
-
 import utilz.LoadSave;
-
 
 public class Playing extends State implements Statemethods {
 	private Player player;
@@ -20,15 +17,12 @@ public class Playing extends State implements Statemethods {
 	private PauseOverlay pauseOverlay;
 	private boolean paused = false;
 
-
-
 	private int xLvlOffset;
 	private int leftBorder = (int) (0.2 * Game.GAME_WIDTH);
 	private int rightBorder = (int) (0.8 * Game.GAME_WIDTH);
 	private int lvlTilesWide = LoadSave.GetLevelData()[0].length;
 	private int maxTilesOffset = lvlTilesWide - Game.TILES_IN_WIDTH;
 	private int maxLvlOffsetX = maxTilesOffset * Game.TILES_SIZE;
-
 
 	public Playing(Game game) {
 		super(game);
@@ -47,9 +41,6 @@ public class Playing extends State implements Statemethods {
 		if (!paused) {
 			levelManager.update();
 			player.update();
-		} else {
-			pauseOverlay.update();
-
 			checkCloseToBorder();
 		} else {
 			pauseOverlay.update();
@@ -70,7 +61,6 @@ public class Playing extends State implements Statemethods {
 		else if (xLvlOffset < 0)
 			xLvlOffset = 0;
 
-
 	}
 
 	@Override
@@ -78,15 +68,11 @@ public class Playing extends State implements Statemethods {
 		levelManager.draw(g, xLvlOffset);
 		player.render(g, xLvlOffset);
 
-		if (paused)
-			pauseOverlay.draw(g);
-
 		if (paused) {
 			g.setColor(new Color(0, 0, 0, 150));
 			g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
 			pauseOverlay.draw(g);
 		}
-
 	}
 
 	@Override
