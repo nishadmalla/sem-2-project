@@ -1,12 +1,17 @@
 package gamestates;
 
 
+
 import main.Game;
+
 
 import java.awt.event.MouseEvent;
 
 import main.Game;
 import ui.MenuButton;
+
+
+
 
 
 public class State {
@@ -23,10 +28,17 @@ public class State {
 	
 
 
+
 	public Game getGame() {
 		return game;
 
 }
 
+}
+
+
+	public Game getGame() {
+		return game;
+	}
 }
 
