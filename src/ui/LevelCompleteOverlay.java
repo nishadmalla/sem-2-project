@@ -45,3 +45,7 @@ public class LevelCompleteOverlay {
         next.update();
         menu.update();
 }
+
+private boolean isIn(UrmButton b,MouseEvent e){
+    return b.getBounds().contains(e.getX(),e.getY());// this code is wrriten so that we dont need to check this code every time
+}
