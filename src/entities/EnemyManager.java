@@ -55,7 +55,6 @@ public class EnemyManager {
 //				c.drawAttackBox(g, xLvlOffset);
 
 			}
-
 	}
 
 	public void checkEnemyHit(Rectangle2D.Float attackBox) {
