@@ -25,6 +25,17 @@ public class Level {
 	private Point playerSpawn;
 	private int[][] lvlData;
 
+	public Level(BufferedImage img) {
+		this.img = img;
+		CreateLevelData();
+		createEnemies();
+		createLvlOffset();
+		calPlayerSpawan();
+	}
+
+	private void calPlayerSpawan() {
+	playerSpawn=GetPlayerSpawn(img);
+	}
 	public Level(int[][] lvlData) {
 		this.lvlData = lvlData;
 	}
