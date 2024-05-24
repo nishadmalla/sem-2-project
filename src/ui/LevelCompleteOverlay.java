@@ -10,5 +10,15 @@ import main.Game;
 import utilz.LoadSave;
 import static utilz.Constants.UI.URMButtons.*;
 public class LevelCompleteOverlay {
-    
+    private Playing playing;
+    private UrmButton menu,next;
+    private BufferedImage img;
+    private int bgX,bgY,bgW,bgH;
+
+    public LevelCompleteOverlay(Playing playing){
+        this.playing=playing;
+        initImg();
+        initButtons();
+        
+    }
 }
