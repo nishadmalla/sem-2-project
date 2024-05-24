@@ -32,24 +32,28 @@ public class LoadSave {
 	public static final String STATUS_BAR = "/res/health_power_bar.png";
 	public static final String COMPLETED_IMG = "/res/completed_sprite.png";
 
-	public static BufferedImage GetSpriteAtlas(String fileName) {
-		BufferedImage img = null;
-		InputStream is = LoadSave.class.getResourceAsStream("/" + fileName);
+	public static BufferedImage GetSpriteAtlas(String fileName){
+		BufferedImage img=null;
+		InputStream is = LoadSave.class.getResourceAsStream(fileName);
 		try {
-			img = ImageIO.read(is);
-
+			if (is != null) {
+				return ImageIO.read(is);
+			} else {
+				throw new IOException("Resource not found: " + fileName);
+			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			e.printStackTrace(); // Consider logging the exception instead
 		} finally {
 			try {
-				is.close();
+				if (is != null) {
+					is.close();
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 		return img;
 	}
-
 	public static ArrayList<Crabby> GetCrabs() {
 		BufferedImage img = GetSpriteAtlas(LEVEL_ONE_DATA);
 		ArrayList<Crabby> list = new ArrayList<>();
