@@ -1,6 +1,5 @@
 package entities;
 
-
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -28,7 +27,7 @@ public class EnemyManager {
 	}
 
 	public void loadEnemies(Level level) {
-		crabbies = level.GetCrabs();
+		crabbies = level.getCrabs();
 	}
 
 	public void update(int[][] lvlData, Player player) {
@@ -55,6 +54,7 @@ public class EnemyManager {
 //				c.drawAttackBox(g, xLvlOffset);
 
 			}
+
 	}
 
 	public void checkEnemyHit(Rectangle2D.Float attackBox) {

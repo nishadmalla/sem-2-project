@@ -2,7 +2,9 @@ package levels;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
+import gamestates.Gamestate;
 import main.Game;
 import utilz.LoadSave;
 
@@ -11,6 +13,8 @@ public class LevelManager {
 	private Game game;
 	private BufferedImage[] levelSprite;
 	private Level levelOne;
+	private ArrayList<Level> levels;
+	private int lvlIndex=0;
 
 	public LevelManager(Game game) {
 		this.game = game;
