@@ -36,4 +36,12 @@ public class LevelCompleteOverlay {
         bgX=Game.GAME_WIDTH/2-bgW/2;
         bgY=(int)(75*Game.SCALE);
     }
+    public void draw(Graphics g){
+        g.drawImage(img, bgX, bgY,bgW,bgH ,null);
+        next.draw(g);
+        menu.draw(g);
+    }
+    public void update(){
+        next.update();
+        menu.update();
 }
