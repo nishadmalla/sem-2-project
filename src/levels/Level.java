@@ -36,16 +36,37 @@ public class Level {
 	private void calPlayerSpawan() {
 	playerSpawn=GetPlayerSpawn(img);
 	}
-	public Level(int[][] lvlData) {
-		this.lvlData = lvlData;
-	}
 
-	public int getSpriteIndex(int x, int y) {
-		return lvlData[y][x];
+	private void createLvlOffset() {
+		lvlTilesWide= img.getWidth();
+		maxTilesOffset=lvlTilesWide-Game.TILES_IN_WIDTH;
+		maxLvlOffsetX=Game.TILES_SIZE*maxTilesOffset;
+		}
+	
+		private void CreateLevelData() {
+			lvlData=GetLevelData(img);
+		}
+	
+		private void createEnemies() {
+			crabs= GetCrabs(img);
+		}
+		public int getSpriteIndex(int x, int y) {
+			return lvlData[y][x];
+		}
+	
+		public int[][] getLevelData() {
+			return lvlData;
+		}
+		public int getLvlOffset(){
+			return maxLvlOffsetX;
+	
+		}
+		public ArrayList<Crabby> getCrabs() {
+			return crabs;
+		}
+		public Point getPlayerSpawn(){
+			return playerSpawn;
+		}
 	}
-
-	public int[][] getLevelData() {
-		return lvlData;
-	}
-
+	
 }
