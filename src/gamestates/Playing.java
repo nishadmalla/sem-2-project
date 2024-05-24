@@ -61,7 +61,6 @@ public class Playing extends State implements Statemethods {
 			levelManager.loadNextLevel();
 			player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn());
 		}
-
 	private void loadStartLevel() {
 		enemyManager.loadEnemies(levelManager.getCurrentLevel());
 	}
@@ -69,6 +68,7 @@ public class Playing extends State implements Statemethods {
 	private void calcLvlOffset() {
 		maxLvlOffsetX=levelManager.getCurrentLevel().getLvlOffset();
 	}
+
 	private void initClasses() {
 		levelManager = new LevelManager(game);
 		enemyManager = new EnemyManager(this);
@@ -82,6 +82,7 @@ public class Playing extends State implements Statemethods {
 		levelCompleteOverlay=new LevelCompleteOverlay(this);
 
 	}
+
 	@Override
 	public void update() {
 		if(paused){
