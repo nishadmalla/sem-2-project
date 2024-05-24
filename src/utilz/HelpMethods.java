@@ -2,7 +2,16 @@ package utilz;
 
 import java.awt.geom.Rectangle2D;
 
+import static utilz.Constants.EnemyConstants.CRABBY;
+import java.awt.Point;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
+import entities.Crabby;
 import main.Game;
+import ui.PauseOverlay;
+
 
 public class HelpMethods {
 
