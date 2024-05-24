@@ -59,4 +59,18 @@ public void mouseMoved(MouseEvent e){
         next.setMouseOver(true);
     }
 }
+public void mouseReleased(MouseEvent e){
+    if(isIn(menu,e)){
+       if( menu.isMousePressed())
+       {
+        playing.resetAll();
+        Gamestate.state=Gamestate.MENU;
+       }
+    }else if(isIn(next,e)){
+       if(next.isMousePressed());
+        playing.loadNextLevel();
+    }
+    menu.resetBools();
+    next.resetBools();
+}
 }
