@@ -108,6 +108,7 @@ public class HelpMethods {
 		return true;
 	}
 
+
 	public static boolean IsSightClear(int[][] lvlData, Rectangle2D.Float firstHitbox, Rectangle2D.Float secondHitbox, int yTile) {
 		int firstXTile = (int) (firstHitbox.x / Game.TILES_SIZE);
 		int secondXTile = (int) (secondHitbox.x / Game.TILES_SIZE);
@@ -117,6 +118,27 @@ public class HelpMethods {
 		else
 			return IsAllTilesWalkable(firstXTile, secondXTile, yTile, lvlData);
 
+	}
+	public static int[][] GetLevelData(BufferedImage img) {
+        // Check if the image is successfully loaded
+        int[][] lvlData = new int[img.getHeight()][img.getWidth()];
+
+        for (int j = 0; j < img.getHeight(); j++) {
+            for (int i = 0; i < img.getWidth(); i++) {
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getRed(); // Assuming level data is encoded in the red channel
+                
+                // Example logic to process the red value
+                if (value >= 48) {
+                    value = 0; // Example condition to set value to 0
+                }
+
+                lvlData[j][i] = value;
+            }
+        }
+
+        return lvlData;
+    
 	}
 
 }
