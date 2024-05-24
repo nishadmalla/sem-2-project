@@ -21,4 +21,15 @@ public class LevelCompleteOverlay {
         initButtons();
         
     }
+    private void initImg() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'initImg'");
+    }
+    private void initButtons() {
+        int menuX=(int)(330*Game.SCALE);
+        int nextX=(int)(445* Game.SCALE);
+        int y=(int)(195* Game.SCALE);
+        next= new UrmButton(nextX, y, URM_SIZE, URM_SIZE, 0);
+        menu= new UrmButton(menuX, y, URM_SIZE, URM_SIZE, 2);
+    }
 }
