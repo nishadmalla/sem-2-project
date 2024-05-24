@@ -1,5 +1,6 @@
 package entities;
 
+
 import static utilz.Constants.PlayerConstants.*;
 import static utilz.HelpMethods.*;
 
@@ -8,7 +9,7 @@ import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Rectangle2D.Float;
 import java.awt.image.BufferedImage;
-
+import java.awt.Point;
 import gamestates.Playing;
 import main.Game;
 import utilz.LoadSave;
@@ -24,6 +25,7 @@ public class Player extends Entity {
 	private float xDrawOffset = 21 * Game.SCALE;
 	private float yDrawOffset = 4 * Game.SCALE;
 
+	
 	// Jumping / Gravity
 	private float airSpeed = 0f;
 	private float gravity = 0.04f * Game.SCALE;
@@ -63,6 +65,13 @@ public class Player extends Entity {
 		loadAnimations();
 		initHitbox(x, y, (int) (20 * Game.SCALE), (int) (27 * Game.SCALE));
 		initAttackBox();
+	}
+
+	public void setSpawn(Point spawn){
+		this.x=spawn.x;
+		this.y=spawn.y;
+		hitbox.x=x;
+		hitbox.y=y;
 	}
 
 	private void initAttackBox() {
@@ -327,3 +336,6 @@ public class Player extends Entity {
 	}
 
 }
+
+
+
