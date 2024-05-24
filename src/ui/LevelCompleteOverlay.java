@@ -49,3 +49,14 @@ public class LevelCompleteOverlay {
 private boolean isIn(UrmButton b,MouseEvent e){
     return b.getBounds().contains(e.getX(),e.getY());// this code is wrriten so that we dont need to check this code every time
 }
+public void mouseMoved(MouseEvent e){
+    next.setMouseOver(false);
+    menu.setMouseOver(false);
+
+    if(isIn(menu,e)){
+        menu.setMouseOver(true);
+    }else if(isIn(next,e)){
+        next.setMouseOver(true);
+    }
+}
+}
