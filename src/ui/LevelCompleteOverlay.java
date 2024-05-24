@@ -73,4 +73,12 @@ public void mouseReleased(MouseEvent e){
     menu.resetBools();
     next.resetBools();
 }
+public void mousePressed(MouseEvent e){
+    
+    if(isIn(menu,e)){
+        menu.setMousePressed(true);
+    }else if(isIn(next,e)){
+        next.setMousePressed(true);
+    }
+}
 }
