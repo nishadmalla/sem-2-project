@@ -19,17 +19,20 @@ public class LevelManager {
 	public LevelManager(Game game) {
 		this.game = game;
 		importOutsideSprites();
-		levelOne = new Level(LoadSave.GetLevelData());
+		levels=new ArrayList<>();
+		BuildAllLevels();
 	}
-
-	private void importOutsideSprites() {
-		BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.LEVEL_ATLAS);
-		levelSprite = new BufferedImage[48];
-		for (int j = 0; j < 4; j++)
-			for (int i = 0; i < 12; i++) {
-				int index = j * 12 + i;
-				levelSprite[index] = img.getSubimage(i * 32, j * 32, 32, 32);
-			}
+	public void loadNextLevel(){
+		lvlIndex++;
+		if(lvlIndex>=levels.size()){
+			lvlIndex=0;
+			System.out.println("nO MORE LEVELS! Game Completed!");
+			Gamestate.state=Gamestate.MENU;
+		}
+		Level newLevel=levels.get(lvlIndex);
+		game.getPlaying().getEnemyManager().loadEnemies(newLevel);
+		game.getPlaying().getPlayer().loadLvlData(newLevel.getLevelData());
+		game.getPlaying().setMaxLvlOffset(newLevel.getLvlOffset());
 	}
 
 	public void draw(Graphics g, int lvlOffset) {
