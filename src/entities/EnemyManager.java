@@ -18,7 +18,10 @@ public class EnemyManager {
 	public EnemyManager(Playing playing) {
 		this.playing = playing;
 		loadEnemyImgs();
-		addEnemies();
+	}
+
+	public void loadEnemies(Level level) {
+		crabbies = level.getCrabs();
 	}
 
 	private void addEnemies() {
