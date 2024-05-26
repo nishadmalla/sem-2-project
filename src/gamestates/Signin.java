@@ -33,30 +33,30 @@ public class Signin extends State implements Statemethods {
         int buttonHeight = 30;
         int spacing = 10;
 
-        // Initialize the username field
+    
         usernameField = new JTextField();
         usernameField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (150 * Game.SCALE), fieldWidth, fieldHeight);
 
-        // Initialize the password field
+      
         passwordField = new JPasswordField();
         passwordField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (220 * Game.SCALE), fieldWidth, fieldHeight);
 
-        // Initialize the view password button
+       
         viewPasswordButton = new JButton("View Password");
         viewPasswordButton.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2 + fieldWidth + spacing, (int) (220 * Game.SCALE), buttonWidth / 2, fieldHeight);
         viewPasswordButton.addActionListener(e -> togglePasswordVisibility());
 
-        // Initialize the signin button
+        
         signinButton = new JButton("Sign In");
         signinButton.setBounds(Game.GAME_WIDTH / 2 - buttonWidth / 2, (int) (290 * Game.SCALE), buttonWidth, buttonHeight);
         signinButton.addActionListener(e -> handleSignin());
 
-        // Initialize the back button
+       
         backButton = new JButton("Back");
         backButton.setBounds(Game.GAME_WIDTH / 2 - buttonWidth / 2, (int) (360 * Game.SCALE), buttonWidth, buttonHeight);
         backButton.addActionListener(e -> handleBack());
 
-        // Add components to the game panel
+        
         game.getGamePanel().setLayout(null);
         game.getGamePanel().add(usernameField);
         game.getGamePanel().add(passwordField);
@@ -69,7 +69,6 @@ public class Signin extends State implements Statemethods {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
     
-        // Simple signin validation (you can replace this with actual validation logic)
         if (username.equals("admin") && password.equals("password")) {
             message = "Sign In successful!";
             // Remove signin components from the panel
