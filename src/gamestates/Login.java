@@ -69,19 +69,83 @@ public class Login extends State implements Statemethods {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
 
-        // Simple login validation (you can replace this with actual validation logic)
         if (username.equals("admin") && password.equals("password")) {
             message = "Login successful!";
-            // Remove login components from the panel
             game.getGamePanel().removeAll();
-            // Repaint the panel to reflect changes
+            
             game.getGamePanel().revalidate();
             game.getGamePanel().repaint();
-            // Transition to the menu state
+            
             Gamestate.state = Gamestate.MENU;
         } else {
             message = "Invalid username or password.";
             game.getGamePanel().repaint();
         }
     }
+    private void handleCreateAccount() {
+        Gamestate.state = Gamestate.SIGNIN;
+       
+        game.getGamePanel().removeAll();
+       
+        game.getGamePanel().revalidate();
+        game.getGamePanel().repaint();
+    }
 }   
+private void togglePasswordVisibility() {
+    if (passwordField.getEchoChar() == '\u2022') {
+        passwordField.setEchoChar((char) 0); // Set to 0 to show password in plain text
+        viewPasswordButton.setText("Hide ");
+    } else {
+        passwordField.setEchoChar('\u2022'); // Set bullet character for hiding
+        viewPasswordButton.setText("View ");
+    }
+}
+
+@Override
+public void update() {
+    // Update logic for the Login state
+}
+
+@Override
+    public void draw(Graphics g) {
+        // Draw background and login message
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
+
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.PLAIN, 24));
+        g.drawString("Login", Game.GAME_WIDTH / 2 - 30, (int) (120 * Game.SCALE));
+        g.setFont(new Font("Arial", Font.PLAIN, 12));
+        g.drawString(message != null ? message : "", Game.GAME_WIDTH / 2 - 60, (int) (320 * Game.SCALE));
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        // Mouse click logic for the Login state
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        // Mouse press logic for the Login state
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        // Mouse release logic for the Login state
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        // Mouse move logic for the Login state
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        // Key press logic for the Login state
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        // Key release logic for the Login state
+    }
+
