@@ -10,23 +10,23 @@ import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import main.Game;
 
-public class Login extends State implements Statemethods {
+public class Signin extends State implements Statemethods {
 
     private Game game;
     private JTextField usernameField;
     private JPasswordField passwordField;
-    private JButton loginButton;
-    private JButton createAccountButton;
+    private JButton signinButton;
     private String message;
     private JButton viewPasswordButton;
+    private JButton backButton;
 
-    public Login(Game game) {
+    public Signin(Game game) {
         super(game);
         this.game = game;
         initUI();
     }
 
-    private void initUI() {
+    void initUI() {
         int fieldWidth = 200;
         int fieldHeight = 30;
         int buttonWidth = 200;
@@ -46,106 +46,113 @@ public class Login extends State implements Statemethods {
         viewPasswordButton.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2 + fieldWidth + spacing, (int) (220 * Game.SCALE), buttonWidth / 2, fieldHeight);
         viewPasswordButton.addActionListener(e -> togglePasswordVisibility());
 
-        // Initialize the login button
-        loginButton = new JButton("Login");
-        loginButton.setBounds(Game.GAME_WIDTH / 2 - buttonWidth / 2, (int) (290 * Game.SCALE), buttonWidth, buttonHeight);
-        loginButton.addActionListener(e -> handleLogin());
+        // Initialize the signin button
+        signinButton = new JButton("Sign In");
+        signinButton.setBounds(Game.GAME_WIDTH / 2 - buttonWidth / 2, (int) (290 * Game.SCALE), buttonWidth, buttonHeight);
+        signinButton.addActionListener(e -> handleSignin());
 
-        // Initialize the create account button
-        createAccountButton = new JButton("Create Account");
-        createAccountButton.setBounds(Game.GAME_WIDTH / 2 - buttonWidth / 2, (int) (360 * Game.SCALE), buttonWidth, buttonHeight);
-        createAccountButton.addActionListener(e -> handleCreateAccount());
+        // Initialize the back button
+        backButton = new JButton("Back");
+        backButton.setBounds(Game.GAME_WIDTH / 2 - buttonWidth / 2, (int) (360 * Game.SCALE), buttonWidth, buttonHeight);
+        backButton.addActionListener(e -> handleBack());
 
         // Add components to the game panel
         game.getGamePanel().setLayout(null);
         game.getGamePanel().add(usernameField);
         game.getGamePanel().add(passwordField);
         game.getGamePanel().add(viewPasswordButton);
-        game.getGamePanel().add(loginButton);
-        game.getGamePanel().add(createAccountButton);
+        game.getGamePanel().add(signinButton);
+        game.getGamePanel().add(backButton);
     }
 
-    private void handleLogin() {
+    private void handleSignin() {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
-
+    
+        // Simple signin validation (you can replace this with actual validation logic)
         if (username.equals("admin") && password.equals("password")) {
-            message = "Login successful!";
+            message = "Sign In successful!";
+            // Remove signin components from the panel
             game.getGamePanel().removeAll();
-            
+            // Repaint the panel to reflect changes
             game.getGamePanel().revalidate();
             game.getGamePanel().repaint();
-            
+            // Transition to the menu state
             Gamestate.state = Gamestate.MENU;
         } else {
             message = "Invalid username or password.";
+            // Set the state to SIGNIN to display the sign-in screen again
+            Gamestate.state = Gamestate.SIGNIN;
             game.getGamePanel().repaint();
         }
     }
-    private void handleCreateAccount() {
-        Gamestate.state = Gamestate.SIGNIN;
-       
+
+    private void handleBack() {
+        // Transition back to the login state
+        Gamestate.state = Gamestate.LOGIN;
+        // Remove signin components from the panel
         game.getGamePanel().removeAll();
-       
+        // Repaint the panel to reflect changes
         game.getGamePanel().revalidate();
         game.getGamePanel().repaint();
     }
- 
-private void togglePasswordVisibility() {
-    if (passwordField.getEchoChar() == '\u2022') {
-        passwordField.setEchoChar((char) 0); // Set to 0 to show password in plain text
-        viewPasswordButton.setText("Hide ");
-    } else {
-        passwordField.setEchoChar('\u2022'); // Set bullet character for hiding
-        viewPasswordButton.setText("View ");
+
+    private void togglePasswordVisibility() {
+        if (passwordField.getEchoChar() == '\u2022') {
+            passwordField.setEchoChar((char) 0); // Set to 0 to show password in plain text
+            viewPasswordButton.setText("Hide ");
+        } else {
+            passwordField.setEchoChar('\u2022'); // Set bullet character for hiding
+            viewPasswordButton.setText("View ");
+        }
     }
-}
+    
+    @Override
+    public void update() {
+        game.getGamePanel().repaint();
+    }
 
-@Override
-public void update() {
-    // Update logic for the Login state
-}
-
-@Override
+    @Override
     public void draw(Graphics g) {
-        // Draw background and login message
+        // Draw background and signin message
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
 
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.PLAIN, 24));
-        g.drawString("Login", Game.GAME_WIDTH / 2 - 30, (int) (120 * Game.SCALE));
+        g.drawString("Sign In", Game.GAME_WIDTH / 2 - 30, (int) (120 * Game.SCALE));
         g.setFont(new Font("Arial", Font.PLAIN, 12));
         g.drawString(message != null ? message : "", Game.GAME_WIDTH / 2 - 60, (int) (320 * Game.SCALE));
     }
+  
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        // Mouse click logic for the Login state
+        // Mouse click logic for the Signin state
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        // Mouse press logic for the Login state
+        // Mouse press logic for the Signin state
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        // Mouse release logic for the Login state
+        // Mouse release logic for the Signin state
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        // Mouse move logic for the Login state
+        // Mouse move logic for the Signin state
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        // Key press logic for the Login state
+        // Key press logic for the Signin state
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        // Key release logic for the Login state
+        // Key release logic for the Signin state
     }
 }
