@@ -128,7 +128,9 @@ public class Game implements Runnable {
 	public Menu getMenu() {
 		return menu;
 	}
-
+	public GamePanel getGamePanel() {
+        return gamePanel;
+    }
 	public Playing getPlaying() {
 		return playing;
 	}
