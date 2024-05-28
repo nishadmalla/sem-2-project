@@ -31,7 +31,7 @@ public class Login extends State implements Statemethods {
         int fieldHeight = 30;
         int buttonWidth = 200;
         int buttonHeight = 30;
-        int spacing = 10;
+        int spacing = 8;
 
         // Initialize the username field
         usernameField = new JTextField();
