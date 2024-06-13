@@ -5,64 +5,82 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import javax.swing.JTextField;
-import javax.swing.JPasswordField;
+import java.awt.image.BufferedImage;
 import javax.swing.JButton;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 import main.Game;
+import javax.swing.SwingUtilities;
+import utilz.LoadSave;
 
 public class Signin extends State implements Statemethods {
 
     private Game game;
     private JTextField usernameField;
     private JPasswordField passwordField;
+    private JPasswordField passwordField2;
     private JButton signinButton;
     private String message;
     private JButton viewPasswordButton;
     private JButton backButton;
+    private BufferedImage backgroundImg, backgroundImgPink;
+    private int menuX, menuY, menuWidth, menuHeight;
+    private boolean componentsInitialized;
 
     public Signin(Game game) {
         super(game);
         this.game = game;
-        initUI();
+        loadBackground();
     }
 
-    void initUI() {
-        int fieldWidth = 200;
-        int fieldHeight = 30;
-        int buttonWidth = 200;
-        int buttonHeight = 30;
-        int spacing = 10;
+    private void loadBackground() {
+        backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.MENU_BACKGROUND);
+        backgroundImgPink = LoadSave.GetSpriteAtlas(LoadSave.MENU_BACKGROUND_IMG);
+        menuWidth = backgroundImg.getWidth();
+        menuHeight = backgroundImg.getHeight();
+        menuX = Game.GAME_WIDTH / 2 - menuWidth / 2;
+        menuY = (int) (40 * Game.SCALE);
+    }
 
-    
-        usernameField = new JTextField();
-        usernameField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (150 * Game.SCALE), fieldWidth, fieldHeight);
+    private void initUI() {
+        SwingUtilities.invokeLater(() -> {
+            int fieldWidth = 200;
+            int fieldHeight = 30;
+            int buttonWidth = 200;
+            int buttonHeight = 30;
+            int spacing = 10;
 
-      
-        passwordField = new JPasswordField();
-        passwordField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (220 * Game.SCALE), fieldWidth, fieldHeight);
+            usernameField = new JTextField();
+            usernameField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (150 * Game.SCALE), fieldWidth, fieldHeight);
 
-       
-        viewPasswordButton = new JButton("View Password");
-        viewPasswordButton.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2 + fieldWidth + spacing, (int) (220 * Game.SCALE), buttonWidth / 2, fieldHeight);
-        viewPasswordButton.addActionListener(e -> togglePasswordVisibility());
+            passwordField = new JPasswordField();
+            passwordField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (220 * Game.SCALE), fieldWidth, fieldHeight);
 
-        
-        signinButton = new JButton("Sign In");
-        signinButton.setBounds(Game.GAME_WIDTH / 2 - buttonWidth / 2, (int) (290 * Game.SCALE), buttonWidth, buttonHeight);
-        signinButton.addActionListener(e -> handleSignin());
+            passwordField2 = new JPasswordField();
+            passwordField2.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (250 * Game.SCALE), fieldWidth, fieldHeight);
 
-       
-        backButton = new JButton("Back");
-        backButton.setBounds(Game.GAME_WIDTH / 2 - buttonWidth / 2, (int) (360 * Game.SCALE), buttonWidth, buttonHeight);
-        backButton.addActionListener(e -> handleBack());
+            viewPasswordButton = new JButton("View Password");
+            viewPasswordButton.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2 + fieldWidth + spacing, (int) (220 * Game.SCALE), buttonWidth / 2, fieldHeight);
+            viewPasswordButton.addActionListener(e -> togglePasswordVisibility());
 
-        
-        game.getGamePanel().setLayout(null);
-        game.getGamePanel().add(usernameField);
-        game.getGamePanel().add(passwordField);
-        game.getGamePanel().add(viewPasswordButton);
-        game.getGamePanel().add(signinButton);
-        game.getGamePanel().add(backButton);
+            signinButton = new JButton("Sign In");
+            signinButton.setBounds(Game.GAME_WIDTH / 2 - buttonWidth / 2, (int) (290 * Game.SCALE), buttonWidth, buttonHeight);
+            signinButton.addActionListener(e -> handleSignin());
+
+            backButton = new JButton("Back");
+            backButton.setBounds(Game.GAME_WIDTH / 2 - buttonWidth / 2, (int) (360 * Game.SCALE), buttonWidth, buttonHeight);
+            backButton.addActionListener(e -> handleBack());
+
+            game.getGamePanel().setLayout(null);
+            game.getGamePanel().add(usernameField);
+            game.getGamePanel().add(passwordField);
+            game.getGamePanel().add(viewPasswordButton);
+            game.getGamePanel().add(signinButton);
+            game.getGamePanel().add(backButton);
+            game.getGamePanel().revalidate();
+            game.getGamePanel().repaint();
+            componentsInitialized = true;
+        });
     }
 
     private void handleSignin() {
