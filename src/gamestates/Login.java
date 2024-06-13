@@ -90,35 +90,53 @@ public class Login extends State implements Statemethods {
 
         if (username.equals("admin") && password.equals("password")) {
             message = "Login successful!";
-            game.getGamePanel().removeAll();
-            
-            game.getGamePanel().revalidate();
-            game.getGamePanel().repaint();
-            
+            removeLoginComponents();
             Gamestate.state = Gamestate.MENU;
+            game.getGamePanel().requestFocusInWindow(); // Ensure focus is set to game panel
         } else {
             message = "Invalid username or password.";
             game.getGamePanel().repaint();
         }
     }
-    private void handleCreateAccount() {
+
+    
+    private void handleSignup() {
         Gamestate.state = Gamestate.SIGNIN;
-       
-        game.getGamePanel().removeAll();
-       
+        removeLoginComponents();
         game.getGamePanel().revalidate();
         game.getGamePanel().repaint();
     }
- 
-private void togglePasswordVisibility() {
-    if (passwordField.getEchoChar() == '\u2022') {
-        passwordField.setEchoChar((char) 0); // Set to 0 to show password in plain text
-        viewPasswordButton.setText("Hide ");
-    } else {
-        passwordField.setEchoChar('\u2022'); // Set bullet character for hiding
-        viewPasswordButton.setText("View ");
+
+    private void togglePasswordVisibility() {
+        if (passwordField.getEchoChar() == '\u2022') {
+            passwordField.setEchoChar((char) 0);
+            viewPasswordButton.setText("Hide ");
+        } else {
+            passwordField.setEchoChar('\u2022');
+            viewPasswordButton.setText("View ");
+        }
     }
-}
+    public void showLoginComponents() {
+        SwingUtilities.invokeLater(() -> {
+            game.getGamePanel().add(usernameField);
+            game.getGamePanel().add(passwordField);
+            game.getGamePanel().add(viewPasswordButton);
+            game.getGamePanel().add(loginButton);
+            game.getGamePanel().add(signupButton);
+            game.getGamePanel().revalidate();
+            game.getGamePanel().repaint();
+        });
+    }
+
+    public void removeLoginComponents() {
+        SwingUtilities.invokeLater(() -> {
+            game.getGamePanel().remove(usernameField);
+            game.getGamePanel().remove(passwordField);
+            game.getGamePanel().remove(viewPasswordButton);
+            game.getGamePanel().remove(loginButton);
+            game.getGamePanel().remove(signupButton);
+        });
+    }
 
 @Override
 public void update() {
