@@ -112,24 +112,38 @@ public class Signin extends State implements Statemethods {
 
     private void togglePasswordVisibility() {
         if (passwordField.getEchoChar() == '\u2022') {
-            passwordField.setEchoChar((char) 0); // Set to 0 to show password in plain text
-            viewPasswordButton.setText("Hide ");
+            passwordField.setEchoChar((char) 0);
+            viewPasswordButton.setText("Hide");
         } else {
-            passwordField.setEchoChar('\u2022'); // Set bullet character for hiding
-            viewPasswordButton.setText("View ");
+            passwordField.setEchoChar('\u2022');
+            viewPasswordButton.setText("View");
         }
     }
-    
+    public void showSigninComponents() {
+        usernameField.setVisible(true);
+        passwordField.setVisible(true);
+        viewPasswordButton.setVisible(true);
+        signinButton.setVisible(true);
+        backButton.setVisible(true);
+    }
+    public void removeSigninComponents() {
+        usernameField.setVisible(false);
+        passwordField.setVisible(false);
+        viewPasswordButton.setVisible(false);
+        signinButton.setVisible(false);
+        backButton.setVisible(false);
+    }
     @Override
     public void update() {
-        game.getGamePanel().repaint();
+        if (!componentsInitialized) {
+            initUI();
+        }
     }
 
     @Override
     public void draw(Graphics g) {
-        // Draw background and signin message
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
+        g.drawImage(backgroundImgPink, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
+        g.drawImage(backgroundImg, menuX, menuY, menuWidth, menuHeight, null);
 
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.PLAIN, 24));
@@ -141,7 +155,11 @@ public class Signin extends State implements Statemethods {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        // Mouse click logic for the Signin state
+        if (Gamestate.state == Gamestate.SIGNIN) {
+            showSigninComponents();
+        } else  {
+            removeSigninComponents();
+        }
     }
 
     @Override
