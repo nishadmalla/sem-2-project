@@ -84,6 +84,7 @@ public class Login extends State implements Statemethods {
             componentsInitialized = true;
         });
     }
+
     private void handleLogin() {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
@@ -99,7 +100,6 @@ public class Login extends State implements Statemethods {
         }
     }
 
-    
     private void handleSignup() {
         Gamestate.state = Gamestate.SIGNIN;
         removeLoginComponents();
@@ -116,6 +116,7 @@ public class Login extends State implements Statemethods {
             viewPasswordButton.setText("View ");
         }
     }
+
     public void showLoginComponents() {
         SwingUtilities.invokeLater(() -> {
             game.getGamePanel().add(usernameField);
@@ -138,19 +139,18 @@ public class Login extends State implements Statemethods {
         });
     }
 
-@Override
-public void update() {
-    if (!componentsInitialized) {
-        try {
-            Thread.sleep(100); // 100 milliseconds delay
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    public void update() {
+       if (!componentsInitialized) {
+            try {
+                Thread.sleep(100); // 100 milliseconds delay
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            initUI();
         }
-        initUI();
     }
-}
 
-@Override
+    @Override
     public void draw(Graphics g) {
         g.drawImage(backgroundImgPink, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
         g.drawImage(backgroundImg, menuX, menuY, menuWidth, menuHeight, null);
