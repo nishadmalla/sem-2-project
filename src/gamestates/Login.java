@@ -42,45 +42,48 @@ public class Login extends State implements Statemethods {
         menuY = (int) (40 * Game.SCALE);
     }
 
-    private void initUI() {
-        int fieldWidth = 200;
-        int fieldHeight = 30;
-        int buttonWidth = 200;
-        int buttonHeight = 30;
-        int spacing = 8;
+    private synchronized void initUI() {
+        if (componentsInitialized) return;
 
-        // Initialize the username field
-        usernameField = new JTextField();
-        usernameField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (150 * Game.SCALE), fieldWidth, fieldHeight);
+        SwingUtilities.invokeLater(() -> {
+            int fieldWidth = 250;
+            int fieldHeight = 50;
+            int buttonWidth = 100;
+            int buttonHeight = 30;
+            int spacing = 10;
 
-        // Initialize the password field
-        passwordField = new JPasswordField();
-        passwordField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (220 * Game.SCALE), fieldWidth, fieldHeight);
+            usernameField = new JTextField();
+            usernameField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (150 * Game.SCALE), fieldWidth, fieldHeight);
+            usernameField.setFocusable(true);
+            usernameField.requestFocusInWindow();
 
-        // Initialize the view password button
-        viewPasswordButton = new JButton("View Password");
-        viewPasswordButton.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2 + fieldWidth + spacing, (int) (220 * Game.SCALE), buttonWidth / 2, fieldHeight);
-        viewPasswordButton.addActionListener(e -> togglePasswordVisibility());
+            passwordField = new JPasswordField();
+            passwordField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (200 * Game.SCALE), fieldWidth, fieldHeight);
+            passwordField.setFocusable(true);
 
-        // Initialize the login button
-        loginButton = new JButton("Login");
-        loginButton.setBounds(Game.GAME_WIDTH / 2 - buttonWidth / 2, (int) (290 * Game.SCALE), buttonWidth, buttonHeight);
-        loginButton.addActionListener(e -> handleLogin());
+            viewPasswordButton = new JButton("View Password");
+            viewPasswordButton.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2 + fieldWidth + spacing, (int) (200 * Game.SCALE), buttonWidth / 2, fieldHeight);
+            viewPasswordButton.addActionListener(e -> togglePasswordVisibility());
 
-        // Initialize the create account button
-        createAccountButton = new JButton("Create Account");
-        createAccountButton.setBounds(Game.GAME_WIDTH / 2 - buttonWidth / 2, (int) (360 * Game.SCALE), buttonWidth, buttonHeight);
-        createAccountButton.addActionListener(e -> handleCreateAccount());
+            loginButton = new JButton("Log In");
+            loginButton.setBounds(Game.GAME_WIDTH / 2 - buttonWidth / 2, (int) (250 * Game.SCALE), buttonWidth, buttonHeight);
+            loginButton.addActionListener(e -> handleLogin());
 
-        // Add components to the game panel
-        game.getGamePanel().setLayout(null);
-        game.getGamePanel().add(usernameField);
-        game.getGamePanel().add(passwordField);
-        game.getGamePanel().add(viewPasswordButton);
-        game.getGamePanel().add(loginButton);
-        game.getGamePanel().add(createAccountButton);
+            signupButton = new JButton("Sign Up");
+            signupButton.setBounds(Game.GAME_WIDTH / 2 - buttonWidth / 2 + fieldWidth + spacing, (int) (250 * Game.SCALE), buttonWidth, buttonHeight);
+            signupButton.addActionListener(e -> handleSignup());
+
+            game.getGamePanel().setLayout(null);
+            game.getGamePanel().add(usernameField);
+            game.getGamePanel().add(passwordField);
+            game.getGamePanel().add(viewPasswordButton);
+            game.getGamePanel().add(loginButton);
+            game.getGamePanel().add(signupButton);
+            game.getGamePanel().revalidate();
+            game.getGamePanel().repaint();
+            componentsInitialized = true;
+        });
     }
-
     private void handleLogin() {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
