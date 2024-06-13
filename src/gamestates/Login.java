@@ -41,6 +41,7 @@ public class Login extends State implements Statemethods {
         menuX = Game.GAME_WIDTH / 2 - menuWidth / 2;
         menuY = (int) (40 * Game.SCALE);
     }
+\\problem slove
 
     private synchronized void initUI() {
         if (componentsInitialized) return;
