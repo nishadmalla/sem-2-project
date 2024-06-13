@@ -5,10 +5,13 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
-import javax.swing.JButton;
+import javax.swing.SwingUtilities;
 import main.Game;
+import utilz.LoadSave;
 
 public class Login extends State implements Statemethods {
 
@@ -16,14 +19,27 @@ public class Login extends State implements Statemethods {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton loginButton;
-    private JButton createAccountButton;
     private String message;
     private JButton viewPasswordButton;
+    private JButton signupButton;
+    private BufferedImage backgroundImg, backgroundImgPink;
+    private int menuX, menuY, menuWidth, menuHeight;
+    private boolean componentsInitialized;
 
     public Login(Game game) {
         super(game);
         this.game = game;
+        loadBackground();
         initUI();
+    }
+
+    private void loadBackground() {
+        backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.MENU_BACKGROUND);
+        backgroundImgPink = LoadSave.GetSpriteAtlas(LoadSave.MENU_BACKGROUND_IMG);
+        menuWidth = backgroundImg.getWidth();
+        menuHeight = backgroundImg.getHeight();
+        menuX = Game.GAME_WIDTH / 2 - menuWidth / 2;
+        menuY = (int) (40 * Game.SCALE);
     }
 
     private void initUI() {
