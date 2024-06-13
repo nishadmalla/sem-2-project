@@ -45,4 +45,15 @@ public class GamePanel extends JPanel {
 		this.revalidate(); 
 		this.repaint(); 
 	}
+	
+	public void clearSigninComponents() {
+		this.removeAll(); // Remove all components
+		this.revalidate(); // Revalidate to apply changes
+		this.repaint(); 
+	}
+    public void showSigninComponents() {
+        setLayout(null);
+        game.getSignin().showSigninComponents();
+    }
+
 }
