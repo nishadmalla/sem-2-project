@@ -2,8 +2,10 @@ package main;
 
 import java.awt.Graphics;
 import gamestates.Gamestate;
+import gamestates.Login;
 import gamestates.Menu;
 import gamestates.Playing;
+import gamestates.Signin;
 
 public class Game implements Runnable {
 
@@ -15,6 +17,8 @@ public class Game implements Runnable {
 
 	private Playing playing;
 	private Menu menu;
+	private Login login;
+    private Signin signin;
 
 	public final static int TILES_DEFAULT_SIZE = 32;
 	public final static float SCALE = 2f;
@@ -133,5 +137,13 @@ public class Game implements Runnable {
     }
 	public Playing getPlaying() {
 		return playing;
+
 	}
+	public Login getLogin() {
+        return login;
+    }
+
+    public Signin getSignin() {
+        return signin;
+    }
 }
