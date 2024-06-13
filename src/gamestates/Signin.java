@@ -86,23 +86,17 @@ public class Signin extends State implements Statemethods {
     private void handleSignin() {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
-    
+
         if (username.equals("admin") && password.equals("password")) {
             message = "Sign In successful!";
-            // Remove signin components from the panel
-            game.getGamePanel().removeAll();
-            // Repaint the panel to reflect changes
-            game.getGamePanel().revalidate();
-            game.getGamePanel().repaint();
-            // Transition to the menu state
-            Gamestate.state = Gamestate.MENU;
+            removeSigninComponents();
+            Gamestate.state = Gamestate.LOGIN;
         } else {
             message = "Invalid username or password.";
-            // Set the state to SIGNIN to display the sign-in screen again
-            Gamestate.state = Gamestate.SIGNIN;
             game.getGamePanel().repaint();
         }
     }
+
     private void handleBack() {
         Gamestate.state = Gamestate.LOGIN;
         removeSigninComponents();
@@ -133,6 +127,7 @@ public class Signin extends State implements Statemethods {
         signinButton.setVisible(false);
         backButton.setVisible(false);
     }
+
     @Override
     public void update() {
         if (!componentsInitialized) {
@@ -151,7 +146,6 @@ public class Signin extends State implements Statemethods {
         g.setFont(new Font("Arial", Font.PLAIN, 12));
         g.drawString(message != null ? message : "", Game.GAME_WIDTH / 2 - 60, (int) (320 * Game.SCALE));
     }
-  
 
     @Override
     public void mouseClicked(MouseEvent e) {
