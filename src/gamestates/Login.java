@@ -140,18 +140,24 @@ public class Login extends State implements Statemethods {
 
 @Override
 public void update() {
-    // Update logic for the Login state
+    if (!componentsInitialized) {
+        try {
+            Thread.sleep(100); // 100 milliseconds delay
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        initUI();
+    }
 }
 
 @Override
     public void draw(Graphics g) {
-        // Draw background and login message
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
+        g.drawImage(backgroundImgPink, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
+        g.drawImage(backgroundImg, menuX, menuY, menuWidth, menuHeight, null);
 
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.PLAIN, 24));
-        g.drawString("Login", Game.GAME_WIDTH / 2 - 30, (int) (120 * Game.SCALE));
+        g.drawString("Log In", Game.GAME_WIDTH / 2 - 30, (int) (120 * Game.SCALE));
         g.setFont(new Font("Arial", Font.PLAIN, 12));
         g.drawString(message != null ? message : "", Game.GAME_WIDTH / 2 - 60, (int) (320 * Game.SCALE));
     }
