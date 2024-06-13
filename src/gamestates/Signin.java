@@ -103,13 +103,9 @@ public class Signin extends State implements Statemethods {
             game.getGamePanel().repaint();
         }
     }
-
     private void handleBack() {
-        // Transition back to the login state
         Gamestate.state = Gamestate.LOGIN;
-        // Remove signin components from the panel
-        game.getGamePanel().removeAll();
-        // Repaint the panel to reflect changes
+        removeSigninComponents();
         game.getGamePanel().revalidate();
         game.getGamePanel().repaint();
     }
