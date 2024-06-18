@@ -34,7 +34,7 @@ public class Login extends State implements Statemethods {
     }
 
     private void loadBackground() {
-        backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.MENU_BACKGROUND);
+        backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.login_BACKGROUND);
         backgroundImgPink = LoadSave.GetSpriteAtlas(LoadSave.MENU_BACKGROUND_IMG);
         menuWidth = backgroundImg.getWidth();
         menuHeight = backgroundImg.getHeight();
