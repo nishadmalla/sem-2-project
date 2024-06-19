@@ -16,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
+
 public class Signin extends State implements Statemethods {
 
     private Game game;
@@ -92,8 +93,8 @@ public class Signin extends State implements Statemethods {
             // View Password Button
             viewPasswordButton = new JButton("Show");
             viewPasswordButton.setBounds(Game.GAME_WIDTH / 2 + fieldWidth / 2 + spacing, (int) (160 * Game.SCALE), buttonWidth / 2, fieldHeight);
-            viewPasswordButton.setFocusable(true);
-            viewPasswordButton.addActionListener(e -> togglePasswordVisibility(passwordField, viewPasswordButton));
+            //viewPasswordButton.setFocusable(true);
+            viewPasswordButton.addActionListener(e -> togglePasswordVisibility());
             game.getGamePanel().add(viewPasswordButton);
 
             // Confirm Password
@@ -105,12 +106,13 @@ public class Signin extends State implements Statemethods {
             // View Confirm Password Button
             viewPasswordButton2 = new JButton("Show");
             viewPasswordButton2.setBounds(Game.GAME_WIDTH / 2 + fieldWidth / 2 + spacing, (int) (180 * Game.SCALE), buttonWidth / 2, fieldHeight);
-            viewPasswordButton2.setFocusable(true);
-            viewPasswordButton2.addActionListener(e -> togglePasswordVisibility(passwordField2, viewPasswordButton2));
+            //viewPasswordButton2.setFocusable(true);
+            viewPasswordButton2.addActionListener(e -> togglePasswordVisibility1());
             game.getGamePanel().add(viewPasswordButton2);
 
             // Sign In Button
             signinButton = new JButton("Sign In");
+            
             signinButton.setBounds(Game.GAME_WIDTH / 2 - buttonWidth / 2, (int) (200 * Game.SCALE), buttonWidth, buttonHeight);
             signinButton.setFocusable(true);
             signinButton.addActionListener(e -> handleSignin());
@@ -131,40 +133,39 @@ public class Signin extends State implements Statemethods {
     }
 
     private void handleSignin() {
-        String firstName = firstNameField.getText().trim();
-        String lastName = lastNameField.getText().trim();
-        String email = emailField.getText().trim();
-        String username = usernameField.getText().trim();
-        String password = new String(passwordField.getPassword()).trim();
-        String confirmPassword = new String(passwordField2.getPassword()).trim();
+        String firstName = firstNameField.getText();
+        String lastName = lastNameField.getText();
+        String email = emailField.getText();
+        String username = usernameField.getText();
+        String password = new String(passwordField.getPassword());
+        String confirmPassword = new String(passwordField2.getPassword());
 
         if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-            showMessage("Fill all the fields");
-            return;
+            JOptionPane.showMessageDialog(null, "Please fill all the fields","ERROR",JOptionPane.ERROR_MESSAGE);
+             
+        } 
+        else if (!isValidEmail(email)) {
+            JOptionPane.showMessageDialog(null,"Enter a valid email address","ERROR",JOptionPane.ERROR_MESSAGE);
+             
+        } 
+        else if (username.length() >= 15) {
+            JOptionPane.showMessageDialog(null, "Username should be less than 15 characters","ERROR",JOptionPane.ERROR_MESSAGE);
+             
         }
-
-        if (!isValidEmail(email)) {
-            showMessage("Enter a valid email");
-            return;
+        else if (password.length() < 8 || password.length() > 16) {
+            JOptionPane.showMessageDialog(null, "Password should be more than 8 characters and less than 16","ERROR",JOptionPane.ERROR_MESSAGE);
+             
+        } 
+        else if (!password.equals(confirmPassword)) {
+            JOptionPane.showMessageDialog(null, "Password doesn't match","ERROR",JOptionPane.ERROR_MESSAGE);
+             
         }
-
-        if (username.length() >= 15) {
-            showMessage("Username should be less than 15 characters");
-            return;
+        else {
+            JOptionPane.showMessageDialog(null, "Sign Up successfull","INFOMATION",JOptionPane.INFORMATION_MESSAGE);
+            
         }
-
-        if (password.length() < 8 || password.length() > 16) {
-            showMessage("Passwords should be more than 8 characters and less than 16");
-            return;
-        }
-
-        if (!password.equals(confirmPassword)) {
-            showMessage("The passwords don't match");
-            return;
-        }
-
-        showMessage("Sign up successful");
-    }
+    
+    }     
 
     private boolean isValidEmail(String email) {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
@@ -173,24 +174,31 @@ public class Signin extends State implements Statemethods {
         return matcher.matches();
     }
 
-    private void showMessage(String message) {
-        JOptionPane.showMessageDialog(game.getGamePanel(), message);
-    }
-
     private void handleBack() {
         removeSigninComponents();
         Gamestate.state = Gamestate.LOGIN;
         game.getGamePanel().revalidate();
         game.getGamePanel().repaint();
     }
+    
 
-    private void togglePasswordVisibility(JPasswordField passwordField, JButton toggleButton) {
+    public void togglePasswordVisibility() {
         if (passwordField.getEchoChar() == '\u2022') {
             passwordField.setEchoChar((char) 0); // Show password characters
-            toggleButton.setText("Hide");
+            viewPasswordButton.setText("Hide");
         } else {
             passwordField.setEchoChar('\u2022'); // Hide password characters
-            toggleButton.setText("Show");
+            viewPasswordButton.setText("Show");
+        }
+    }
+
+    public void togglePasswordVisibility1() {
+        if (passwordField.getEchoChar() == '\u2022') {
+            passwordField.setEchoChar((char) 0); // Show password characters
+            viewPasswordButton2.setText("Hide");
+        } else {
+            passwordField.setEchoChar('\u2022'); // Hide password characters
+            viewPasswordButton2.setText("Show");
         }
     }
 
@@ -228,9 +236,15 @@ public class Signin extends State implements Statemethods {
     @Override
     public void update() {
         if (!componentsInitialized) {
+            try {
+                Thread.sleep(100); // 100 milliseconds delay
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             initUI();
         }
     }
+
 
     @Override
     public void draw(Graphics g) {
