@@ -15,6 +15,8 @@ import utilz.LoadSave;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
+import gamestates.Login;
+
 
 
 public class Signin extends State implements Statemethods {
@@ -25,7 +27,7 @@ public class Signin extends State implements Statemethods {
     private JTextField emailField;
     private JTextField usernameField;
     private JPasswordField passwordField;
-    private JPasswordField passwordField2;
+    private JPasswordField confirmPasswordField;
     private JButton signinButton;
     private String message;
     private JButton viewPasswordButton;
@@ -93,26 +95,23 @@ public class Signin extends State implements Statemethods {
             // View Password Button
             viewPasswordButton = new JButton("Show");
             viewPasswordButton.setBounds(Game.GAME_WIDTH / 2 + fieldWidth / 2 + spacing, (int) (160 * Game.SCALE), buttonWidth / 2, fieldHeight);
-            //viewPasswordButton.setFocusable(true);
             viewPasswordButton.addActionListener(e -> togglePasswordVisibility());
             game.getGamePanel().add(viewPasswordButton);
 
             // Confirm Password
-            passwordField2 = new JPasswordField();
-            passwordField2.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (180 * Game.SCALE), fieldWidth, fieldHeight);
-            passwordField2.setFocusable(true);
-            game.getGamePanel().add(passwordField2);
+            confirmPasswordField = new JPasswordField();
+            confirmPasswordField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (180 * Game.SCALE), fieldWidth, fieldHeight);
+            confirmPasswordField.setFocusable(true);
+            game.getGamePanel().add(confirmPasswordField);
 
             // View Confirm Password Button
             viewPasswordButton2 = new JButton("Show");
             viewPasswordButton2.setBounds(Game.GAME_WIDTH / 2 + fieldWidth / 2 + spacing, (int) (180 * Game.SCALE), buttonWidth / 2, fieldHeight);
-            //viewPasswordButton2.setFocusable(true);
-            viewPasswordButton2.addActionListener(e -> togglePasswordVisibility1());
+            viewPasswordButton2.addActionListener(e -> toggleConfirmPasswordVisibility());
             game.getGamePanel().add(viewPasswordButton2);
 
             // Sign In Button
             signinButton = new JButton("Sign In");
-            
             signinButton.setBounds(Game.GAME_WIDTH / 2 - buttonWidth / 2, (int) (200 * Game.SCALE), buttonWidth, buttonHeight);
             signinButton.setFocusable(true);
             signinButton.addActionListener(e -> handleSignin());
@@ -138,7 +137,7 @@ public class Signin extends State implements Statemethods {
         String email = emailField.getText();
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
-        String confirmPassword = new String(passwordField2.getPassword());
+        String confirmPassword = new String(confirmPasswordField.getPassword());
 
         if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Please fill all the fields","ERROR",JOptionPane.ERROR_MESSAGE);
@@ -192,12 +191,13 @@ public class Signin extends State implements Statemethods {
         }
     }
 
-    public void togglePasswordVisibility1() {
-        if (passwordField.getEchoChar() == '\u2022') {
-            passwordField.setEchoChar((char) 0); // Show password characters
+
+    public void toggleConfirmPasswordVisibility() {
+        if (confirmPasswordField.getEchoChar() == '\u2022') {
+            confirmPasswordField.setEchoChar((char) 0); // Show password characters
             viewPasswordButton2.setText("Hide");
         } else {
-            passwordField.setEchoChar('\u2022'); // Hide password characters
+            confirmPasswordField.setEchoChar('\u2022'); // Hide password characters
             viewPasswordButton2.setText("Show");
         }
     }
@@ -209,7 +209,7 @@ public class Signin extends State implements Statemethods {
         usernameField.setVisible(true);
         passwordField.setVisible(true);
         viewPasswordButton.setVisible(true);
-        passwordField2.setVisible(true);
+        confirmPasswordField.setVisible(true);
         viewPasswordButton2.setVisible(true);
         signinButton.setVisible(true);
         backButton.setVisible(true);
@@ -222,7 +222,7 @@ public class Signin extends State implements Statemethods {
             game.getGamePanel().remove(emailField);
             game.getGamePanel().remove(usernameField);
             game.getGamePanel().remove(passwordField);
-            game.getGamePanel().remove(passwordField2);
+            game.getGamePanel().remove(confirmPasswordField);
             game.getGamePanel().remove(viewPasswordButton);
             game.getGamePanel().remove(viewPasswordButton2);
             game.getGamePanel().remove(signinButton);
