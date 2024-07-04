@@ -15,8 +15,10 @@ import utilz.LoadSave;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
-import gamestates.Login;
-
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 
 public class Signin extends State implements Statemethods {
@@ -141,29 +143,22 @@ public class Signin extends State implements Statemethods {
 
         if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Please fill all the fields","ERROR",JOptionPane.ERROR_MESSAGE);
-             
         } 
         else if (!isValidEmail(email)) {
             JOptionPane.showMessageDialog(null,"Enter a valid email address","ERROR",JOptionPane.ERROR_MESSAGE);
-             
         } 
         else if (username.length() >= 15) {
             JOptionPane.showMessageDialog(null, "Username should be less than 15 characters","ERROR",JOptionPane.ERROR_MESSAGE);
-             
         }
         else if (password.length() < 8 || password.length() > 16) {
             JOptionPane.showMessageDialog(null, "Password should be more than 8 characters and less than 16","ERROR",JOptionPane.ERROR_MESSAGE);
-             
         } 
         else if (!password.equals(confirmPassword)) {
             JOptionPane.showMessageDialog(null, "Password doesn't match","ERROR",JOptionPane.ERROR_MESSAGE);
-             
         }
         else {
-            JOptionPane.showMessageDialog(null, "Sign Up successfull","INFOMATION",JOptionPane.INFORMATION_MESSAGE);
-            
+            insertIntoDatabase(firstName, lastName, email, username, password,confirmPassword);
         }
-    
     }     
 
     private boolean isValidEmail(String email) {
@@ -173,6 +168,29 @@ public class Signin extends State implements Statemethods {
         return matcher.matches();
     }
 
+    private void  insertIntoDatabase(String firstName,String lastName, String email,String username, String password, String confirmPassword){
+        String dbUrl = "jdbc:mysql://localhost:3306/Jump"; 
+        String dbUser = "root"; 
+        String dbPassword = "MahotraAdhikari7@"; 
+    
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+        
+            String sql= "Insert INTO Newplayer(first_name, last_name, email, username, player_password, confirm_password) VALUES (?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement statement= connection.prepareStatement(sql)){
+                statement.setString(1,firstName);
+                statement.setString(2, lastName);
+                statement.setString(3, email);
+                statement.setString(4, username);
+                statement.setString(5, password);
+                statement.setString(6, confirmPassword);
+                statement.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Sign Up successful", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Database error: " + e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private void handleBack() {
         removeSigninComponents();
         Gamestate.state = Gamestate.LOGIN;
@@ -180,7 +198,6 @@ public class Signin extends State implements Statemethods {
         game.getGamePanel().repaint();
     }
     
-
     public void togglePasswordVisibility() {
         if (passwordField.getEchoChar() == '\u2022') {
             passwordField.setEchoChar((char) 0); // Show password characters
@@ -190,7 +207,6 @@ public class Signin extends State implements Statemethods {
             viewPasswordButton.setText("Show");
         }
     }
-
 
     public void toggleConfirmPasswordVisibility() {
         if (confirmPasswordField.getEchoChar() == '\u2022') {
