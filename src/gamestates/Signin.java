@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
@@ -174,6 +175,11 @@ public class Signin extends State implements Statemethods {
         String dbPassword = "MahotraAdhikari7@"; 
     
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+            // Check if username already exists
+            if (usernameExists(connection, username)) {
+                JOptionPane.showMessageDialog(null, "Username already exists. Please choose another one.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                return; // Exit method if username exists
+            }
         
             String sql= "Insert INTO Newplayer(first_name, last_name, email, username, player_password, confirm_password) VALUES (?, ?, ?, ?, ?, ?)";
             try (PreparedStatement statement= connection.prepareStatement(sql)){
@@ -189,6 +195,20 @@ public class Signin extends State implements Statemethods {
         }catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Database error: " + e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private boolean usernameExists(Connection connection, String username) throws SQLException {
+    String sql = "SELECT COUNT(*) FROM Newplayer WHERE username = ?";
+    try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        statement.setString(1, username);
+        try (ResultSet resultSet = statement.executeQuery()) {
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                return count > 0;
+            }
+        }
+    }
+        return false;
     }
 
     private void handleBack() {
