@@ -172,7 +172,7 @@ public class Signin extends State implements Statemethods {
     private void  insertIntoDatabase(String firstName,String lastName, String email,String username, String password, String confirmPassword){
         String dbUrl = "jdbc:mysql://localhost:3306/Jump"; 
         String dbUser = "root"; 
-        String dbPassword = "MahotraAdhikari7@"; 
+        String dbPassword = ""; 
     
         try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             // Check if username already exists
