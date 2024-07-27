@@ -15,12 +15,8 @@ import utilz.LoadSave;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import model.SigninDatabaseUtil;
 
 public class Signin extends State implements Statemethods {
 
@@ -65,62 +61,53 @@ public class Signin extends State implements Statemethods {
             int buttonHeight = 30;
             int spacing = 10;
 
-            // First Name
+            // Initialize and add components
             firstNameField = new JTextField();
             firstNameField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2 - 110, (int) (100 * Game.SCALE), fieldWidth, fieldHeight);
             firstNameField.setFocusable(true);
             game.getGamePanel().add(firstNameField);
 
-            // Last Name
             lastNameField = new JTextField();
             lastNameField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2 + 110, (int) (100 * Game.SCALE), fieldWidth, fieldHeight);
             lastNameField.setFocusable(true);
             game.getGamePanel().add(lastNameField);
 
-            // Email
             emailField = new JTextField();
             emailField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (120 * Game.SCALE), fieldWidth, fieldHeight);
             emailField.setFocusable(true);
             game.getGamePanel().add(emailField);
 
-            // Username
             usernameField = new JTextField();
             usernameField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (140 * Game.SCALE), fieldWidth, fieldHeight);
             usernameField.setFocusable(true);
             game.getGamePanel().add(usernameField);
 
-            // Password
             passwordField = new JPasswordField();
             passwordField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (160 * Game.SCALE), fieldWidth, fieldHeight);
             passwordField.setFocusable(true);
             game.getGamePanel().add(passwordField);
 
-            // View Password Button
             viewPasswordButton = new JButton("Show");
             viewPasswordButton.setBounds(Game.GAME_WIDTH / 2 + fieldWidth / 2 + spacing, (int) (160 * Game.SCALE), buttonWidth / 2, fieldHeight);
             viewPasswordButton.addActionListener(e -> togglePasswordVisibility());
             game.getGamePanel().add(viewPasswordButton);
 
-            // Confirm Password
             confirmPasswordField = new JPasswordField();
             confirmPasswordField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (180 * Game.SCALE), fieldWidth, fieldHeight);
             confirmPasswordField.setFocusable(true);
             game.getGamePanel().add(confirmPasswordField);
 
-            // View Confirm Password Button
             viewPasswordButton2 = new JButton("Show");
             viewPasswordButton2.setBounds(Game.GAME_WIDTH / 2 + fieldWidth / 2 + spacing, (int) (180 * Game.SCALE), buttonWidth / 2, fieldHeight);
             viewPasswordButton2.addActionListener(e -> toggleConfirmPasswordVisibility());
             game.getGamePanel().add(viewPasswordButton2);
 
-            // Sign In Button
             signinButton = new JButton("Sign In");
             signinButton.setBounds(Game.GAME_WIDTH / 2 - buttonWidth / 2, (int) (200 * Game.SCALE), buttonWidth, buttonHeight);
             signinButton.setFocusable(true);
             signinButton.addActionListener(e -> handleSignin());
             game.getGamePanel().add(signinButton);
 
-            // Back Button
             backButton = new JButton("Back");
             backButton.setBounds(Game.GAME_WIDTH / 3 - buttonWidth / 2, (int) (200 * Game.SCALE), buttonWidth, buttonHeight);
             backButton.setFocusable(true);
@@ -143,22 +130,31 @@ public class Signin extends State implements Statemethods {
         String confirmPassword = new String(confirmPasswordField.getPassword());
 
         if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Please fill all the fields","ERROR",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Please fill all the fields", "ERROR", JOptionPane.ERROR_MESSAGE);
         } 
         else if (!isValidEmail(email)) {
-            JOptionPane.showMessageDialog(null,"Enter a valid email address","ERROR",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Enter a valid email address", "ERROR", JOptionPane.ERROR_MESSAGE);
         } 
         else if (username.length() >= 15) {
-            JOptionPane.showMessageDialog(null, "Username should be less than 15 characters","ERROR",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Username should be less than 15 characters", "ERROR", JOptionPane.ERROR_MESSAGE);
         }
         else if (password.length() < 8 || password.length() > 16) {
-            JOptionPane.showMessageDialog(null, "Password should be more than 8 characters and less than 16","ERROR",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Password should be more than 8 characters and less than 16", "ERROR", JOptionPane.ERROR_MESSAGE);
         } 
         else if (!password.equals(confirmPassword)) {
-            JOptionPane.showMessageDialog(null, "Password doesn't match","ERROR",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Password doesn't match", "ERROR", JOptionPane.ERROR_MESSAGE);
         }
         else {
-            insertIntoDatabase(firstName, lastName, email, username, password,confirmPassword);
+            try {
+                if (SigninDatabaseUtil.usernameExists(username)) {
+                    JOptionPane.showMessageDialog(null, "Username already exists. Please choose another one.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    SigninDatabaseUtil.insertUser(firstName, lastName, email, username, password, confirmPassword);
+                    JOptionPane.showMessageDialog(null, "Sign Up successful", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
+                }
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Database error: " + e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }     
 
@@ -167,48 +163,6 @@ public class Signin extends State implements Statemethods {
         Pattern pattern = Pattern.compile(emailRegex);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
-    }
-
-    private void  insertIntoDatabase(String firstName,String lastName, String email,String username, String password, String confirmPassword){
-        String dbUrl = "jdbc:mysql://localhost:3306/Jump"; 
-        String dbUser = "root"; 
-        String dbPassword = ""; 
-    
-        try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
-            // Check if username already exists
-            if (usernameExists(connection, username)) {
-                JOptionPane.showMessageDialog(null, "Username already exists. Please choose another one.", "ERROR", JOptionPane.ERROR_MESSAGE);
-                return; // Exit method if username exists
-            }
-        
-            String sql= "Insert INTO Newplayer(first_name, last_name, email, username, player_password, confirm_password) VALUES (?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement statement= connection.prepareStatement(sql)){
-                statement.setString(1,firstName);
-                statement.setString(2, lastName);
-                statement.setString(3, email);
-                statement.setString(4, username);
-                statement.setString(5, password);
-                statement.setString(6, confirmPassword);
-                statement.executeUpdate();
-                JOptionPane.showMessageDialog(null, "Sign Up successful", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
-            }
-        }catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Database error: " + e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private boolean usernameExists(Connection connection, String username) throws SQLException {
-    String sql = "SELECT COUNT(*) FROM Newplayer WHERE username = ?";
-    try (PreparedStatement statement = connection.prepareStatement(sql)) {
-        statement.setString(1, username);
-        try (ResultSet resultSet = statement.executeQuery()) {
-            if (resultSet.next()) {
-                int count = resultSet.getInt(1);
-                return count > 0;
-            }
-        }
-    }
-        return false;
     }
 
     private void handleBack() {
@@ -280,7 +234,6 @@ public class Signin extends State implements Statemethods {
             initUI();
         }
     }
-
 
     @Override
     public void draw(Graphics g) {

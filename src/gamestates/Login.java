@@ -10,8 +10,11 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.SwingUtilities;
+import javax.swing.JOptionPane;
 import main.Game;
 import utilz.LoadSave;
+import model.DatabaseUtil;
+
 
 public class Login extends State implements Statemethods {
 
@@ -89,14 +92,16 @@ public class Login extends State implements Statemethods {
     private void handleLogin() {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
+        
+        System.out.println("Attempting to log in with username: " + username);
 
-        if (username.equals("admin") && password.equals("password")) {
-            message = "Login successful!";
+        if (DatabaseUtil.authenticateUser(username, password)) {
+            //message = "Login successful!";
             removeLoginComponents();
             Gamestate.state = Gamestate.MENU;
             game.getGamePanel().requestFocusInWindow(); // Ensure focus is set to game panel
         } else {
-            message = "Invalid username or password.";
+            JOptionPane.showMessageDialog(game.getGamePanel(), "User not found.", "Login Failed", JOptionPane.ERROR_MESSAGE);
             game.getGamePanel().repaint();
         }
     }
