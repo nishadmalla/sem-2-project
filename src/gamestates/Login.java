@@ -96,7 +96,7 @@ public class Login extends State implements Statemethods {
         System.out.println("Attempting to log in with username: " + username);
 
         if (DatabaseUtil.authenticateUser(username, password)) {
-            //message = "Login successful!";
+            JOptionPane.showMessageDialog(game.getGamePanel(), "You are successfully logged in !", "Logged In", JOptionPane.INFORMATION_MESSAGE);
             removeLoginComponents();
             Gamestate.state = Gamestate.MENU;
             game.getGamePanel().requestFocusInWindow(); // Ensure focus is set to game panel
