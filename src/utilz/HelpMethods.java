@@ -1,17 +1,18 @@
 package utilz;
 
-import java.awt.geom.Rectangle2D;
-
 import static utilz.Constants.EnemyConstants.CRABBY;
-import java.awt.Point;
+import static utilz.Constants.ObjectConstants.*;
+
 import java.awt.Color;
+import java.awt.Point;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import entities.Crabby;
 import main.Game;
-import ui.PauseOverlay;
-
+import objects.GameContainer;
+import objects.Potion;
 
 public class HelpMethods {
 
@@ -36,8 +37,6 @@ public class HelpMethods {
 		return IsTileSolid((int) xIndex, (int) yIndex, lvlData);
 	}
 
-
-
 	public static boolean IsTileSolid(int xTile, int yTile, int[][] lvlData) {
 		int value = lvlData[yTile][xTile];
 
@@ -46,7 +45,6 @@ public class HelpMethods {
 		return false;
 	}
 
-	
 	public static float GetEntityXPosNextToWall(Rectangle2D.Float hitbox, float xSpeed) {
 		int currentTile = (int) (hitbox.x / Game.TILES_SIZE);
 		if (xSpeed > 0) {
@@ -73,27 +71,16 @@ public class HelpMethods {
 	}
 
 	public static boolean IsEntityOnFloor(Rectangle2D.Float hitbox, int[][] lvlData) {
-		// Check the pixel below bottomleft and bottomright
 		if (!IsSolid(hitbox.x, hitbox.y + hitbox.height + 1, lvlData))
 			if (!IsSolid(hitbox.x + hitbox.width, hitbox.y + hitbox.height + 1, lvlData))
 				return false;
-
 		return true;
-
 	}
 
-	/**
-	 * We just check the bottomleft of the enemy here +/- the xSpeed. We never check
-	 * bottom right in case the enemy is going to the right. It would be more
-	 * correct checking the bottomleft for left direction and bottomright for the
-	 * right direction. But it wont have big effect in the game. The enemy will
-	 * simply change direction sooner when there is an edge on the right side of the
-	 * enemy, when its going right.
-	 */
 	public static boolean IsFloor(Rectangle2D.Float hitbox, float xSpeed, int[][] lvlData) {
-		if(xSpeed>0){
-		return IsSolid(hitbox.x+hitbox.width + xSpeed, hitbox.y + hitbox.height + 1, lvlData);
-		}else
+		if (xSpeed > 0)
+			return IsSolid(hitbox.x + hitbox.width + xSpeed, hitbox.y + hitbox.height + 1, lvlData);
+		else
 			return IsSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, lvlData);
 	}
 
@@ -104,10 +91,8 @@ public class HelpMethods {
 			if (!IsTileSolid(xStart + i, y + 1, lvlData))
 				return false;
 		}
-
 		return true;
 	}
-
 
 	public static boolean IsSightClear(int[][] lvlData, Rectangle2D.Float firstHitbox, Rectangle2D.Float secondHitbox, int yTile) {
 		int firstXTile = (int) (firstHitbox.x / Game.TILES_SIZE);
@@ -117,28 +102,19 @@ public class HelpMethods {
 			return IsAllTilesWalkable(secondXTile, firstXTile, yTile, lvlData);
 		else
 			return IsAllTilesWalkable(firstXTile, secondXTile, yTile, lvlData);
-
 	}
+
 	public static int[][] GetLevelData(BufferedImage img) {
-        // Check if the image is successfully loaded
-        int[][] lvlData = new int[img.getHeight()][img.getWidth()];
-
-        for (int j = 0; j < img.getHeight(); j++) {
-            for (int i = 0; i < img.getWidth(); i++) {
-                Color color = new Color(img.getRGB(i, j));
-                int value = color.getRed(); // Assuming level data is encoded in the red channel
-                
-                // Example logic to process the red value
-                if (value >= 48) {
-                    value = 0; // Example condition to set value to 0
-                }
-
-                lvlData[j][i] = value;
-            }
-        }
-
-        return lvlData;
-    
+		int[][] lvlData = new int[img.getHeight()][img.getWidth()];
+		for (int j = 0; j < img.getHeight(); j++)
+			for (int i = 0; i < img.getWidth(); i++) {
+				Color color = new Color(img.getRGB(i, j));
+				int value = color.getRed();
+				if (value >= 48)
+					value = 0;
+				lvlData[j][i] = value;
+			}
+		return lvlData;
 	}
 
 	public static ArrayList<Crabby> GetCrabs(BufferedImage img) {
@@ -152,16 +128,42 @@ public class HelpMethods {
 			}
 		return list;
 	}
-	public static Point GetPlayerSpawn(BufferedImage img){
+
+	public static Point GetPlayerSpawn(BufferedImage img) {
 		for (int j = 0; j < img.getHeight(); j++)
 			for (int i = 0; i < img.getWidth(); i++) {
 				Color color = new Color(img.getRGB(i, j));
 				int value = color.getGreen();
 				if (value == 100)
-					return new Point(i*Game.TILES_SIZE,j*Game.TILES_SIZE);
+					return new Point(i * Game.TILES_SIZE, j * Game.TILES_SIZE);
 			}
-		return new Point(1*Game.TILES_SIZE,1*Game.TILES_SIZE);
-	
+		return new Point(1 * Game.TILES_SIZE, 1 * Game.TILES_SIZE);
+	}
+
+	public static ArrayList<Potion> GetPotions(BufferedImage img) {
+		ArrayList<Potion> list = new ArrayList<>();
+		for (int j = 0; j < img.getHeight(); j++)
+			for (int i = 0; i < img.getWidth(); i++) {
+				Color color = new Color(img.getRGB(i, j));
+				int value = color.getBlue();
+				if (value == RED_POTION || value == BLUE_POTION)
+					list.add(new Potion(i * Game.TILES_SIZE, j * Game.TILES_SIZE, value));
+			}
+
+		return list;
+	}
+
+	public static ArrayList<GameContainer> GetContainers(BufferedImage img) {
+		ArrayList<GameContainer> list = new ArrayList<>();
+		for (int j = 0; j < img.getHeight(); j++)
+			for (int i = 0; i < img.getWidth(); i++) {
+				Color color = new Color(img.getRGB(i, j));
+				int value = color.getBlue();
+				if (value == BOX || value == BARREL)
+					list.add(new GameContainer(i * Game.TILES_SIZE, j * Game.TILES_SIZE, value));
+			}
+
+		return list;
 	}
 
 }
