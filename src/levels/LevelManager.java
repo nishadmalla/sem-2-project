@@ -12,33 +12,37 @@ public class LevelManager {
 
 	private Game game;
 	private BufferedImage[] levelSprite;
-	private Level levelOne;
 	private ArrayList<Level> levels;
-	private int lvlIndex=0;
+	private int lvlIndex = 0;
 
 	public LevelManager(Game game) {
 		this.game = game;
 		importOutsideSprites();
-		levels=new ArrayList<>();
-		BuildAllLevels();
+		levels = new ArrayList<>();
+		buildAllLevels();
 	}
-	public void loadNextLevel(){
+
+	public void loadNextLevel() {
 		lvlIndex++;
-		if(lvlIndex>=levels.size()){
-			lvlIndex=0;
-			System.out.println("nO MORE LEVELS! Game Completed!");
-			Gamestate.state=Gamestate.MENU;
+		if (lvlIndex >= levels.size()) {
+			lvlIndex = 0;
+			System.out.println("No more levels! Game Completed!");
+			Gamestate.state = Gamestate.MENU;
 		}
-		Level newLevel=levels.get(lvlIndex);
+
+		Level newLevel = levels.get(lvlIndex);
 		game.getPlaying().getEnemyManager().loadEnemies(newLevel);
 		game.getPlaying().getPlayer().loadLvlData(newLevel.getLevelData());
 		game.getPlaying().setMaxLvlOffset(newLevel.getLvlOffset());
+		game.getPlaying().getObjectManager().loadObjects(newLevel);
 	}
-	private void BuildAllLevels() {
-		BufferedImage[] allLevels=LoadSave.GetAllLevels();
-		for(BufferedImage img : allLevels)
+
+	private void buildAllLevels() {
+		BufferedImage[] allLevels = LoadSave.GetAllLevels();
+		for (BufferedImage img : allLevels)
 			levels.add(new Level(img));
 	}
+
 	private void importOutsideSprites() {
 		BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.LEVEL_ATLAS);
 		levelSprite = new BufferedImage[48];
@@ -61,13 +65,12 @@ public class LevelManager {
 
 	}
 
-	
 	public Level getCurrentLevel() {
 		return levels.get(lvlIndex);
 	}
-	public int getAmountOfLevels(){
+
+	public int getAmountOfLevels() {
 		return levels.size();
 	}
-
 
 }
