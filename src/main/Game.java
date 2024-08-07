@@ -22,6 +22,7 @@ public class Game implements Runnable {
     private Signin signin;
 	private Playing playing;
 	private Menu menu;
+	private AudioPlayer audioPlayer;
 
 	public final static int TILES_DEFAULT_SIZE = 32;
 	public final static float SCALE = 2f;
@@ -35,6 +36,7 @@ public class Game implements Runnable {
 		initClasses();
 
 		gamePanel = new GamePanel(this);
+		audioPlayer= new AudioPlayer();
 		gameWindow = new GameWindow(gamePanel);
 		gamePanel.setFocusable(true);
 		gamePanel.requestFocus();
@@ -149,6 +151,10 @@ public class Game implements Runnable {
 	public Playing getPlaying() {
 		return playing;
 	}
+
+    public AudioPlayer getAudioPlayer() {
+        return audioPlayer;
+    }
 
 	
 }
