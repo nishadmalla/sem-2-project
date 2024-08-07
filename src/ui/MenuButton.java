@@ -1,11 +1,12 @@
 package ui;
 
-import gamestates.Gamestate;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import static utilz.Constants.UI.Buttons.*;
+
+import gamestates.Gamestate;
 import utilz.LoadSave;
+import static utilz.Constants.UI.Buttons.*;
 
 public class MenuButton {
 	private int xPos, yPos, rowIndex, index;
@@ -67,7 +68,7 @@ public class MenuButton {
 	public Rectangle getBounds() {
 		return bounds;
 	}
-
+ 
 	public void applyGamestate() {
 		Gamestate.state = state;
 	}
@@ -76,5 +77,9 @@ public class MenuButton {
 		mouseOver = false;
 		mousePressed = false;
 	}
+	public Gamestate getState(){
+		return state;
+	}
 
+	
 }

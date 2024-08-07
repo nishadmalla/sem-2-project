@@ -30,64 +30,61 @@ public class LoadSave {
     public static final String TRAP_ATLAS = "trap_atlas.png";
     public static final String CANNON_ATLAS = "cannon_atlas.png";
     public static final String CANNON_BALL = "ball.png";
-    public static final String DEATH_SCREEN = "/res/death_screen.png";
-    public static final String OPTIONS_MENU= "/res/options_background.png";
+    public static final String DEATH_SCREEN = "death_screen.png";
+    public static final String OPTIONS_MENU= "options_background.png";
 
 
-    public static BufferedImage GetSpriteAtlas(String fileName) {
-        BufferedImage img = null;
-        InputStream is = null;
-        try {
-            is = LoadSave.class.getResourceAsStream("/" + fileName);
-            if (is == null) {
-                throw new IOException("Resource not found: " + fileName);
-            }
-            img = ImageIO.read(is);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return img;
-    }
+    public static BufferedImage GetSpriteAtlas(String fileName){
+		BufferedImage img=null;
+		InputStream is = LoadSave.class.getResourceAsStream(fileName);
+		try {
+			if (is != null) {
+				return ImageIO.read(is);
+			} else {
+				throw new IOException("Resource not found: " + fileName);
+			}
+		} catch (IOException e) {
+			e.printStackTrace(); // Consider logging the exception instead
+		} finally {
+			try {
+				if (is != null) {
+					is.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return img;
+	}
+	
+	public static BufferedImage[]GetAllLevels(){
+		URL url= LoadSave.class.getResource("/lvls");
+		File file = null;
 
-    public static BufferedImage[] GetAllLevels() {
-        URL url = LoadSave.class.getResource("/lvls");
-        File file = null;
+		try {
+			file = new File(url.toURI());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
 
-        try {
-            file = new File(url.toURI());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+		File[] files= file.listFiles();
+		File[] filesSorted= new File[files.length];
 
-        File[] files = file.listFiles();
-        File[] filesSorted = new File[files.length];
+		for(int i=0;i<filesSorted.length;i++)
+			for(int j=0;j<files.length;j++)
+				if(files[j].getName().equals(""+(i+1)+".png"))
+				filesSorted[i]=files[j];
+	
 
-        for (int i = 0; i < filesSorted.length; i++) {
-            for (int j = 0; j < files.length; j++) {
-                if (files[j].getName().equals((i + 1) + ".png")) {
-                    filesSorted[i] = files[j];
-                }
-            }
-        }
+		BufferedImage[] imgs= new BufferedImage[filesSorted.length];
 
-        BufferedImage[] imgs = new BufferedImage[filesSorted.length];
-
-        for (int i = 0; i < imgs.length; i++) {
-            try {
-                imgs[i] = ImageIO.read(filesSorted[i]);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return imgs;
-    }
-}
+		for(int i=0;i<imgs.length;i++)	
+		try {
+			imgs[i]=ImageIO.read(filesSorted[i]);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return imgs;
+	}
+	
+	}
