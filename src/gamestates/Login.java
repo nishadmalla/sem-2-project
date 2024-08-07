@@ -10,11 +10,8 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.SwingUtilities;
-import javax.swing.JOptionPane;
 import main.Game;
 import utilz.LoadSave;
-import model.DatabaseUtil;
-
 
 public class Login extends State implements Statemethods {
 
@@ -37,14 +34,13 @@ public class Login extends State implements Statemethods {
     }
 
     private void loadBackground() {
-        backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.login_BACKGROUND);
+        backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.MENU_BACKGROUND);
         backgroundImgPink = LoadSave.GetSpriteAtlas(LoadSave.MENU_BACKGROUND_IMG);
         menuWidth = backgroundImg.getWidth();
         menuHeight = backgroundImg.getHeight();
         menuX = Game.GAME_WIDTH / 2 - menuWidth / 2;
         menuY = (int) (40 * Game.SCALE);
     }
-
 
     private synchronized void initUI() {
         if (componentsInitialized) return;
@@ -92,23 +88,21 @@ public class Login extends State implements Statemethods {
     private void handleLogin() {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
-        
-        System.out.println("Attempting to log in with username: " + username);
 
-        if (DatabaseUtil.authenticateUser(username, password)) {
-            JOptionPane.showMessageDialog(game.getGamePanel(), "You are successfully logged in !", "Logged In", JOptionPane.INFORMATION_MESSAGE);
+        if (username.equals("admin") && password.equals("password")) {
+            message = "Login successful!";
             removeLoginComponents();
             Gamestate.state = Gamestate.MENU;
             game.getGamePanel().requestFocusInWindow(); // Ensure focus is set to game panel
         } else {
-            JOptionPane.showMessageDialog(game.getGamePanel(), "User not found.", "Login Failed", JOptionPane.ERROR_MESSAGE);
+            message = "Invalid username or password.";
             game.getGamePanel().repaint();
         }
     }
 
     private void handleSignup() {
-        removeLoginComponents();
         Gamestate.state = Gamestate.SIGNIN;
+        removeLoginComponents();
         game.getGamePanel().revalidate();
         game.getGamePanel().repaint();
     }

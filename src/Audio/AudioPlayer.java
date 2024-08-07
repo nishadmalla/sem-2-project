@@ -60,5 +60,37 @@ public class AudioPlayer {
 			}
 		}
 	}
+    private Clip getClip(String name) {
+		System.out.println("Getting clip for " + name);
+		URL url = getClass().getResource("/audioa/" + name + ".wav");
+		if (url == null) {
+			System.err.println("Audio file not found: " + name + ".wav");
+			return null;
+		}
+	
+		AudioInputStream audio;
+		try {
+			audio = AudioSystem.getAudioInputStream(url);
+			if (audio == null) {
+				System.err.println("Error loading audio file: " + name + ".wav");
+				return null;
+			}
+			Clip c = AudioSystem.getClip();
+			c.open(audio);
+			return c;
+		} catch (UnsupportedAudioFileException e) {
+			System.err.println("Error loading audio file: " + name + ".wav");
+			System.err.println(e.getMessage());
+			return null;
+		} catch (IOException e) {
+			System.err.println("Error loading audio file: " + name + ".wav");
+			System.err.println(e.getMessage());
+			return null;
+		} catch (LineUnavailableException e) {
+			System.err.println("Error loading audio file: " + name + ".wav");
+			System.err.println(e.getMessage());
+			return null;
+		}
+	}
 
 }

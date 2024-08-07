@@ -12,25 +12,16 @@ import javax.swing.JTextField;
 import main.Game;
 import javax.swing.SwingUtilities;
 import utilz.LoadSave;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.swing.JOptionPane;
-import java.sql.SQLException;
-import model.SigninDatabaseUtil;
 
 public class Signin extends State implements Statemethods {
 
     private Game game;
-    private JTextField firstNameField;
-    private JTextField lastNameField;
-    private JTextField emailField;
     private JTextField usernameField;
     private JPasswordField passwordField;
-    private JPasswordField confirmPasswordField;
+    private JPasswordField passwordField2;
     private JButton signinButton;
     private String message;
     private JButton viewPasswordButton;
-    private JButton viewPasswordButton2;
     private JButton backButton;
     private BufferedImage backgroundImg, backgroundImgPink;
     private int menuX, menuY, menuWidth, menuHeight;
@@ -43,7 +34,7 @@ public class Signin extends State implements Statemethods {
     }
 
     private void loadBackground() {
-        backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.signup_BACKGROUND);
+        backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.MENU_BACKGROUND);
         backgroundImgPink = LoadSave.GetSpriteAtlas(LoadSave.MENU_BACKGROUND_IMG);
         menuWidth = backgroundImg.getWidth();
         menuHeight = backgroundImg.getHeight();
@@ -51,9 +42,7 @@ public class Signin extends State implements Statemethods {
         menuY = (int) (40 * Game.SCALE);
     }
 
-    private synchronized void initUI() {
-        if (componentsInitialized) return;
-
+    private void initUI() {
         SwingUtilities.invokeLater(() -> {
             int fieldWidth = 200;
             int fieldHeight = 30;
@@ -61,60 +50,33 @@ public class Signin extends State implements Statemethods {
             int buttonHeight = 30;
             int spacing = 10;
 
-            // Initialize and add components
-            firstNameField = new JTextField();
-            firstNameField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2 - 110, (int) (100 * Game.SCALE), fieldWidth, fieldHeight);
-            firstNameField.setFocusable(true);
-            game.getGamePanel().add(firstNameField);
-
-            lastNameField = new JTextField();
-            lastNameField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2 + 110, (int) (100 * Game.SCALE), fieldWidth, fieldHeight);
-            lastNameField.setFocusable(true);
-            game.getGamePanel().add(lastNameField);
-
-            emailField = new JTextField();
-            emailField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (120 * Game.SCALE), fieldWidth, fieldHeight);
-            emailField.setFocusable(true);
-            game.getGamePanel().add(emailField);
-
             usernameField = new JTextField();
-            usernameField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (140 * Game.SCALE), fieldWidth, fieldHeight);
-            usernameField.setFocusable(true);
-            game.getGamePanel().add(usernameField);
+            usernameField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (150 * Game.SCALE), fieldWidth, fieldHeight);
 
             passwordField = new JPasswordField();
-            passwordField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (160 * Game.SCALE), fieldWidth, fieldHeight);
-            passwordField.setFocusable(true);
-            game.getGamePanel().add(passwordField);
+            passwordField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (220 * Game.SCALE), fieldWidth, fieldHeight);
 
-            viewPasswordButton = new JButton("Show");
-            viewPasswordButton.setBounds(Game.GAME_WIDTH / 2 + fieldWidth / 2 + spacing, (int) (160 * Game.SCALE), buttonWidth / 2, fieldHeight);
+            passwordField2 = new JPasswordField();
+            passwordField2.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (250 * Game.SCALE), fieldWidth, fieldHeight);
+
+            viewPasswordButton = new JButton("View Password");
+            viewPasswordButton.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2 + fieldWidth + spacing, (int) (220 * Game.SCALE), buttonWidth / 2, fieldHeight);
             viewPasswordButton.addActionListener(e -> togglePasswordVisibility());
-            game.getGamePanel().add(viewPasswordButton);
-
-            confirmPasswordField = new JPasswordField();
-            confirmPasswordField.setBounds(Game.GAME_WIDTH / 2 - fieldWidth / 2, (int) (180 * Game.SCALE), fieldWidth, fieldHeight);
-            confirmPasswordField.setFocusable(true);
-            game.getGamePanel().add(confirmPasswordField);
-
-            viewPasswordButton2 = new JButton("Show");
-            viewPasswordButton2.setBounds(Game.GAME_WIDTH / 2 + fieldWidth / 2 + spacing, (int) (180 * Game.SCALE), buttonWidth / 2, fieldHeight);
-            viewPasswordButton2.addActionListener(e -> toggleConfirmPasswordVisibility());
-            game.getGamePanel().add(viewPasswordButton2);
 
             signinButton = new JButton("Sign In");
-            signinButton.setBounds(Game.GAME_WIDTH / 2 - buttonWidth / 2, (int) (200 * Game.SCALE), buttonWidth, buttonHeight);
-            signinButton.setFocusable(true);
+            signinButton.setBounds(Game.GAME_WIDTH / 2 - buttonWidth / 2, (int) (290 * Game.SCALE), buttonWidth, buttonHeight);
             signinButton.addActionListener(e -> handleSignin());
-            game.getGamePanel().add(signinButton);
 
             backButton = new JButton("Back");
-            backButton.setBounds(Game.GAME_WIDTH / 3 - buttonWidth / 2, (int) (200 * Game.SCALE), buttonWidth, buttonHeight);
-            backButton.setFocusable(true);
+            backButton.setBounds(Game.GAME_WIDTH / 2 - buttonWidth / 2, (int) (360 * Game.SCALE), buttonWidth, buttonHeight);
             backButton.addActionListener(e -> handleBack());
-            game.getGamePanel().add(backButton);
 
             game.getGamePanel().setLayout(null);
+            game.getGamePanel().add(usernameField);
+            game.getGamePanel().add(passwordField);
+            game.getGamePanel().add(viewPasswordButton);
+            game.getGamePanel().add(signinButton);
+            game.getGamePanel().add(backButton);
             game.getGamePanel().revalidate();
             game.getGamePanel().repaint();
             componentsInitialized = true;
@@ -122,115 +84,53 @@ public class Signin extends State implements Statemethods {
     }
 
     private void handleSignin() {
-        String firstName = firstNameField.getText();
-        String lastName = lastNameField.getText();
-        String email = emailField.getText();
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
-        String confirmPassword = new String(confirmPasswordField.getPassword());
 
-        if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Please fill all the fields", "ERROR", JOptionPane.ERROR_MESSAGE);
-        } 
-        else if (!isValidEmail(email)) {
-            JOptionPane.showMessageDialog(null, "Enter a valid email address", "ERROR", JOptionPane.ERROR_MESSAGE);
-        } 
-        else if (username.length() >= 15) {
-            JOptionPane.showMessageDialog(null, "Username should be less than 15 characters", "ERROR", JOptionPane.ERROR_MESSAGE);
+        if (username.equals("admin") && password.equals("password")) {
+            message = "Sign In successful!";
+            removeSigninComponents();
+            Gamestate.state = Gamestate.LOGIN;
+        } else {
+            message = "Invalid username or password.";
+            game.getGamePanel().repaint();
         }
-        else if (password.length() < 8 || password.length() > 16) {
-            JOptionPane.showMessageDialog(null, "Password should be more than 8 characters and less than 16", "ERROR", JOptionPane.ERROR_MESSAGE);
-        } 
-        else if (!password.equals(confirmPassword)) {
-            JOptionPane.showMessageDialog(null, "Password doesn't match", "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
-        else {
-            try {
-                if (SigninDatabaseUtil.usernameExists(username)) {
-                    JOptionPane.showMessageDialog(null, "Username already exists. Please choose another one.", "ERROR", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    SigninDatabaseUtil.insertUser(firstName, lastName, email, username, password, confirmPassword);
-                    JOptionPane.showMessageDialog(null, "Sign Up successful", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
-                }
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, "Database error: " + e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }     
-
-    private boolean isValidEmail(String email) {
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-        Pattern pattern = Pattern.compile(emailRegex);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
     }
 
     private void handleBack() {
-        removeSigninComponents();
         Gamestate.state = Gamestate.LOGIN;
+        removeSigninComponents();
         game.getGamePanel().revalidate();
         game.getGamePanel().repaint();
     }
-    
-    public void togglePasswordVisibility() {
+
+    private void togglePasswordVisibility() {
         if (passwordField.getEchoChar() == '\u2022') {
-            passwordField.setEchoChar((char) 0); // Show password characters
+            passwordField.setEchoChar((char) 0);
             viewPasswordButton.setText("Hide");
         } else {
-            passwordField.setEchoChar('\u2022'); // Hide password characters
-            viewPasswordButton.setText("Show");
+            passwordField.setEchoChar('\u2022');
+            viewPasswordButton.setText("View");
         }
     }
-
-    public void toggleConfirmPasswordVisibility() {
-        if (confirmPasswordField.getEchoChar() == '\u2022') {
-            confirmPasswordField.setEchoChar((char) 0); // Show password characters
-            viewPasswordButton2.setText("Hide");
-        } else {
-            confirmPasswordField.setEchoChar('\u2022'); // Hide password characters
-            viewPasswordButton2.setText("Show");
-        }
-    }
-
     public void showSigninComponents() {
-        firstNameField.setVisible(true);
-        lastNameField.setVisible(true);
-        emailField.setVisible(true);
         usernameField.setVisible(true);
         passwordField.setVisible(true);
         viewPasswordButton.setVisible(true);
-        confirmPasswordField.setVisible(true);
-        viewPasswordButton2.setVisible(true);
         signinButton.setVisible(true);
         backButton.setVisible(true);
     }
-
     public void removeSigninComponents() {
-        SwingUtilities.invokeLater(() -> {
-            game.getGamePanel().remove(firstNameField);
-            game.getGamePanel().remove(lastNameField);
-            game.getGamePanel().remove(emailField);
-            game.getGamePanel().remove(usernameField);
-            game.getGamePanel().remove(passwordField);
-            game.getGamePanel().remove(confirmPasswordField);
-            game.getGamePanel().remove(viewPasswordButton);
-            game.getGamePanel().remove(viewPasswordButton2);
-            game.getGamePanel().remove(signinButton);
-            game.getGamePanel().remove(backButton);
-            game.getGamePanel().revalidate();
-            game.getGamePanel().repaint();
-            componentsInitialized = false; // Reset the flag
-        });
+        usernameField.setVisible(false);
+        passwordField.setVisible(false);
+        viewPasswordButton.setVisible(false);
+        signinButton.setVisible(false);
+        backButton.setVisible(false);
     }
 
     @Override
     public void update() {
         if (!componentsInitialized) {
-            try {
-                Thread.sleep(100); // 100 milliseconds delay
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             initUI();
         }
     }
@@ -242,7 +142,7 @@ public class Signin extends State implements Statemethods {
 
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.PLAIN, 24));
-        g.drawString("SIGN UP", Game.GAME_WIDTH / 2 - 40, (int) (90 * Game.SCALE));
+        g.drawString("Sign In", Game.GAME_WIDTH / 2 - 30, (int) (120 * Game.SCALE));
         g.setFont(new Font("Arial", Font.PLAIN, 12));
         g.drawString(message != null ? message : "", Game.GAME_WIDTH / 2 - 60, (int) (320 * Game.SCALE));
     }
@@ -251,7 +151,7 @@ public class Signin extends State implements Statemethods {
     public void mouseClicked(MouseEvent e) {
         if (Gamestate.state == Gamestate.SIGNIN) {
             showSigninComponents();
-        } else {
+        } else  {
             removeSigninComponents();
         }
     }
