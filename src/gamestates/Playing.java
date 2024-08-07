@@ -286,4 +286,9 @@ public class Playing extends State implements Statemethods {
 		return levelManager;
 	}
 
+    public void setPlayerDying(boolean b) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setPlayerDying'");
+    }
+
 }

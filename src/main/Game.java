@@ -1,6 +1,8 @@
 package main;
 
 import java.awt.Graphics;
+
+import Audio.AudioPlayer;
 import gamestates.Gamestate;
 import gamestates.Login;
 import gamestates.Menu;
@@ -146,5 +148,10 @@ public class Game implements Runnable {
     }
 	public Playing getPlaying() {
 		return playing;
+	}
+
+	public AudioPlayer getAudioPlayer() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'getAudioPlayer'");
 	}
 }

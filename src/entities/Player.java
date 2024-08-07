@@ -85,25 +85,34 @@ public class Player extends Entity {
 
 	public void update() {
 		updateHealthBar();
+		updatePowerBar();
 
 		if (currentHealth <= 0) {
-			playing.setGameOver(true);
+			if(state != DEAD){
+				state= DEAD;
+				aniTick=0;
+				aniIndex=0;
+				playing.setPlayerDying(true);
+				playing.getGame().getAudioPlayer().playEffect(AudioPlayer.DIE);
+				
+			}else if(aniIndex==GetSpriteAmount(DEAD)-1 && aniTick>= ANI_SPEED-1){
+				playing.setGameOver(true);
+				playing.getGame().getAudioPlayer().stopSong();
+				playing.getGame().getAudioPlayer().playEffect(AudioPlayer.GAMEOVER);
+
+			}else updateAnimationTick();
 			return;
-		}
-
-		updateAttackBox();
-
-		updatePos();
-		if (moving) {
-			checkPotionTouched();
-			checkSpikesTouched();
-			tileY = (int) (hitbox.y / Game.TILES_SIZE);
 		}
 		if (attacking)
 			checkAttack();
 
 		updateAnimationTick();
 		setAnimation();
+	}
+
+	private void updatePowerBar() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'updatePowerBar'");
 	}
 
 	private void checkSpikesTouched() {
