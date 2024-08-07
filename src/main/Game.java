@@ -8,6 +8,7 @@ import gamestates.Login;
 import gamestates.Menu;
 import gamestates.Playing;
 import gamestates.Signin;
+import ui.AudioOptions;
 import utilz.LoadSave;
 
 public class Game implements Runnable {
@@ -23,6 +24,7 @@ public class Game implements Runnable {
 	private Playing playing;
 	private Menu menu;
 	private AudioPlayer audioPlayer;
+	private AudioOptions audioOptions;
 
 	public final static int TILES_DEFAULT_SIZE = 32;
 	public final static float SCALE = 2f;
@@ -155,6 +157,10 @@ public class Game implements Runnable {
     public AudioPlayer getAudioPlayer() {
         return audioPlayer;
     }
+
+	public AudioOptions getAudioOptions() {
+		return audioOptions;
+	}
 
 	
 }

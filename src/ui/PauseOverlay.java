@@ -19,22 +19,16 @@ public class PauseOverlay {
 	private int bgX, bgY, bgW, bgH;
 	private SoundButton musicButton, sfxButton;
 	private UrmButton menuB, replayB, unpauseB;
-	private VolumeButton volumeButton;
+	private AudioOptions audioOption;	
 
 	public PauseOverlay(Playing playing) {
+		
 		this.playing = playing;
 		loadBackground();
-
-		createSoundButtons();
 		createUrmButtons();
-		createVolumeButton();
+		audioOption=playing.getGame().getAudioOptions();
 	}
 
-	private void createVolumeButton() {
-		int vX = (int) (309 * Game.SCALE);
-		int vY = (int) (278 * Game.SCALE);
-		volumeButton = new VolumeButton(vX, vY, SLIDER_WIDTH, VOLUME_HEIGHT);
-	}
 
 	private void createUrmButtons() {
 		int menuX = (int) (313 * Game.SCALE);
@@ -162,7 +156,7 @@ public class PauseOverlay {
 		else if (isIn(e, unpauseB))
 			unpauseB.setMouseOver(true);
 		else if (isIn(e, volumeButton))
-			volumeButton.setMouseOver(true);
+			audioOption.setMouseOver(true);
 	}
 
 	private boolean isIn(MouseEvent e, PauseButton b) {
