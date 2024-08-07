@@ -147,6 +147,9 @@ public class Game implements Runnable {
 	public Playing getPlaying() {
 		return playing;
 	}
+	public GamePanel getGamePanel() {
+        return gamePanel;
+    }
 
 	public GameOptions getGameOptions() {
 		return gameOptions;
