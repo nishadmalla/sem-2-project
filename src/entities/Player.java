@@ -103,7 +103,23 @@ public class Player extends Entity {
 			}else updateAnimationTick();
 			return;
 		}
-		if (attacking)
+		updateAttackBox();
+
+		updatePos();
+		if (moving) {
+			checkPotionTouched();
+			checkSpikesTouched();
+			tileY = (int) (hitbox.y / Game.TILES_SIZE);
+			if(powerAttackActive){
+				powerAttackActiveTick++;
+
+				if(powerAttackActiveTick >=35){
+					powerAttackActiveTick=0;
+					powerAttackActive=false;
+				}
+			}
+		}
+		if (attacking || powerAttackActive)
 			checkAttack();
 
 		updateAnimationTick();
