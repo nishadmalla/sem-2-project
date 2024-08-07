@@ -5,6 +5,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import Audio.AudioPlayer;
 import entities.Player;
 import gamestates.Playing;
 import levels.Level;
@@ -156,6 +157,7 @@ public class ObjectManager {
 			c.update();
 			if (c.getAniIndex() == 4 && c.getAniTick() == 0)
 				shootCannon(c);
+				
 		}
 	}
 
@@ -165,7 +167,7 @@ public class ObjectManager {
 			dir = -1;
 
 		projectiles.add(new Projectile((int) c.getHitbox().x, (int) c.getHitbox().y, dir));
-
+		playing.getGame().getAudioPlayer().playEffect(AudioPlayer.PEARL);
 	}
 
 	public void draw(Graphics g, int xLvlOffset) {

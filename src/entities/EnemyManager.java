@@ -5,8 +5,8 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import gamestates.Playing;
 import Audio.AudioPlayer;
+import gamestates.Playing;
 import levels.Level;
 import utilz.LoadSave;
 import static utilz.Constants.EnemyConstants.*;
@@ -24,6 +24,7 @@ public class EnemyManager {
 
 	public void loadEnemies(Level level) {
 		crabbies = level.getCrabs();
+		
 	}
 
 	public void update(int[][] lvlData, Player player) {
@@ -32,6 +33,7 @@ public class EnemyManager {
 			if (c.isActive()) {
 				c.update(lvlData, player);
 				isAnyActive = true;
+				
 			}
 		if (!isAnyActive)
 			playing.setLevelCompleted(true);
@@ -45,8 +47,8 @@ public class EnemyManager {
 		for (Crabby c : crabbies)
 			if (c.isActive()) {
 
-				g.drawImage(crabbyArr[c.getState()][c.getAniIndex()], (int) c.getHitbox().x - xLvlOffset - CRABBY_DRAWOFFSET_X + c.flipX(), (int) c.getHitbox().y - CRABBY_DRAWOFFSET_Y,
-						CRABBY_WIDTH * c.flipW(), CRABBY_HEIGHT, null);
+				g.drawImage(crabbyArr[c.getState()][c.getAniIndex()], (int) c.getHitbox().x - xLvlOffset - CRABBY_DRAWOFFSET_X + c.flipX(), (int) c.getHitbox().y - CRABBY_DRAWOFFSET_Y,CRABBY_WIDTH * c.flipW(), CRABBY_HEIGHT, null);
+				
 
 //				c.drawHitbox(g, xLvlOffset);
 //				c.drawAttackBox(g, xLvlOffset);
@@ -57,8 +59,11 @@ public class EnemyManager {
 	public void checkEnemyHit(Rectangle2D.Float attackBox) {
 		for (Crabby c : crabbies)
 			if (c.isActive())
+			
 				if (attackBox.intersects(c.getHitbox())) {
+					
 					c.hurt(10);
+					
 					return;
 				}
 	}
@@ -74,6 +79,7 @@ public class EnemyManager {
 	public void resetAllEnemies() {
 		for (Crabby c : crabbies)
 			c.resetEnemy();
+			
 	}
 
 }
