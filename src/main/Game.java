@@ -2,8 +2,10 @@ package main;
 
 import java.awt.Graphics;
 import gamestates.Gamestate;
+import gamestates.Login;
 import gamestates.Menu;
 import gamestates.Playing;
+import gamestates.Signin;
 import utilz.LoadSave;
 
 public class Game implements Runnable {
@@ -14,6 +16,8 @@ public class Game implements Runnable {
 	private final int FPS_SET = 120;
 	private final int UPS_SET = 200;
 
+	private Login login;
+    private Signin signin;
 	private Playing playing;
 	private Menu menu;
 
@@ -129,7 +133,17 @@ public class Game implements Runnable {
 	public Menu getMenu() {
 		return menu;
 	}
+  public GamePanel getGamePanel() {
+        return gamePanel;
+    }
 
+    public Login getLogin() {
+        return login;
+    }
+
+    public Signin getSignin() {
+        return signin;
+    }
 	public Playing getPlaying() {
 		return playing;
 	}
