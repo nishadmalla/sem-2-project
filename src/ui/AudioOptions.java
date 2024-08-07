@@ -72,4 +72,7 @@ public class AudioOptions {
 			volumeButton.setMousePressed(true);
 	}
 
+    private boolean isIn(MouseEvent e, PauseButton b) {
+		return b.getBounds().contains(e.getX(), e.getY());
+	}
 }
