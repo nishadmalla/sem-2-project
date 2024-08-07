@@ -99,13 +99,21 @@ public class AudioPlayer {
 	}
 
 	private void updateEffectsVolume() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateEffectsVolume'");
+        for (Clip c : effects) {
+			if (c != null) {
+				FloatControl gainControl = (FloatControl) c.getControl(FloatControl.Type.MASTER_GAIN);
+				float range = gainControl.getMaximum() - gainControl.getMinimum();
+				float gain = (range * volume) + gainControl.getMinimum();
+				gainControl.setValue(gain);
+			}
+        }
     }
 
     private void updateSongVolume() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateSongVolume'");
+        FloatControl gainControl = (FloatControl) songs[currentSongId].getControl(FloatControl.Type.MASTER_GAIN);
+		float range = gainControl.getMaximum() - gainControl.getMinimum();
+		float gain = (range * volume) + gainControl.getMinimum();
+		gainControl.setValue(gain);
     }
 
     public void stopSong() {
