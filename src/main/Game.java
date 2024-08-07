@@ -3,11 +3,10 @@ package main;
 import java.awt.Graphics;
 
 import Audio.AudioPlayer;
+import gamestates.GameOptions;
 import gamestates.Gamestate;
-import gamestates.Login;
 import gamestates.Menu;
 import gamestates.Playing;
-import gamestates.Signin;
 import ui.AudioOptions;
 import utilz.LoadSave;
 
@@ -19,13 +18,11 @@ public class Game implements Runnable {
 	private final int FPS_SET = 120;
 	private final int UPS_SET = 200;
 
-	private Login login;
-    private Signin signin;
 	private Playing playing;
 	private Menu menu;
-	private AudioPlayer audioPlayer;
+	private GameOptions gameOptions;
 	private AudioOptions audioOptions;
-
+	private AudioPlayer audioPlayer;
 	public final static int TILES_DEFAULT_SIZE = 32;
 	public final static float SCALE = 2f;
 	public final static int TILES_IN_WIDTH = 26;
@@ -38,7 +35,6 @@ public class Game implements Runnable {
 		initClasses();
 
 		gamePanel = new GamePanel(this);
-		audioPlayer= new AudioPlayer();
 		gameWindow = new GameWindow(gamePanel);
 		gamePanel.setFocusable(true);
 		gamePanel.requestFocus();
@@ -47,8 +43,11 @@ public class Game implements Runnable {
 	}
 
 	private void initClasses() {
+		audioOptions = new AudioOptions(this);
+		audioPlayer= new AudioPlayer();
 		menu = new Menu(this);
 		playing = new Playing(this);
+		gameOptions = new GameOptions(this);
 	}
 
 	private void startGameLoop() {
@@ -65,6 +64,8 @@ public class Game implements Runnable {
 			playing.update();
 			break;
 		case OPTIONS:
+			gameOptions.update();
+			break;
 		case QUIT:
 		default:
 			System.exit(0);
@@ -80,6 +81,9 @@ public class Game implements Runnable {
 			break;
 		case PLAYING:
 			playing.draw(g);
+			break;
+		case OPTIONS:
+			gameOptions.draw(g);
 			break;
 		default:
 			break;
@@ -139,28 +143,19 @@ public class Game implements Runnable {
 	public Menu getMenu() {
 		return menu;
 	}
-  public GamePanel getGamePanel() {
-        return gamePanel;
-    }
 
-    public Login getLogin() {
-        return login;
-    }
-
-    public Signin getSignin() {
-        return signin;
-    }
 	public Playing getPlaying() {
 		return playing;
 	}
 
-    public AudioPlayer getAudioPlayer() {
-        return audioPlayer;
-    }
+	public GameOptions getGameOptions() {
+		return gameOptions;
+	}
 
 	public AudioOptions getAudioOptions() {
 		return audioOptions;
 	}
-
-	
+	public AudioPlayer getAudioPlayer(){
+		return audioPlayer;
+	}
 }
