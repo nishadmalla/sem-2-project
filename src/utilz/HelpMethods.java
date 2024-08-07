@@ -212,7 +212,7 @@ public class HelpMethods {
 				Color color = new Color(img.getRGB(i, j));
 				int value = color.getBlue();
 				if (value == CANNON_LEFT || value == CANNON_RIGHT)
-					list.add(new Cannon(i * Game.TILES_SIZE, j * Game.TILES_SIZE, value));
+				list.add(new Cannon(i * Game.TILES_SIZE, j * Game.TILES_SIZE, value, null));
 			}
 
 		return list;
