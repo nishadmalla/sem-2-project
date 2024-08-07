@@ -92,5 +92,40 @@ public class AudioPlayer {
 			return null;
 		}
 	}
+    public void setVolume(float volume) {
+		this.volume = volume;
+		updateSongVolume();
+		updateEffectsVolume();
+	}
 
+	private void updateEffectsVolume() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'updateEffectsVolume'");
+    }
+
+    private void updateSongVolume() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'updateSongVolume'");
+    }
+
+    public void stopSong() {
+		if (songs[currentSongId].isActive())
+			songs[currentSongId].stop();
+	}
+
+	public void setLevelSong(int lvlIndex) {
+		if (lvlIndex % 2 == 0)
+			playSong(LEVEL_1);
+		else
+			playSong(LEVEL_2);
+	}
+    public void playSong(int song) {
+		stopSong();
+
+		currentSongId = song;
+		updateSongVolume();
+		songs[currentSongId].setMicrosecondPosition(0);
+		songs[currentSongId].loop(Clip.LOOP_CONTINUOUSLY);
+
+      }
 }
