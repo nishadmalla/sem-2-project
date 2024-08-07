@@ -40,7 +40,8 @@ public class Playing extends State implements Statemethods {
 
 	private boolean gameOver;
 	private boolean lvlCompleted;
-
+	private boolean playerDying;
+	
 	public Playing(Game game) {
 		super(game);
 		initClasses();
@@ -286,9 +287,7 @@ public class Playing extends State implements Statemethods {
 		return levelManager;
 	}
 
-    public void setPlayerDying(boolean b) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setPlayerDying'");
-    }
-
+	public void setPlayerDying(boolean playerDying) {
+		this.playerDying = playerDying;
+	}
 }

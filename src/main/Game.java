@@ -150,8 +150,5 @@ public class Game implements Runnable {
 		return playing;
 	}
 
-	public AudioPlayer getAudioPlayer() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'getAudioPlayer'");
-	}
+	
 }
