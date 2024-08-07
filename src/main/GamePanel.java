@@ -39,21 +39,5 @@ public class GamePanel extends JPanel {
 	public Game getGame() {
 		return game;
 	}
-	
-	public void clearLoginComponents() {
-		this.removeAll(); 
-		this.revalidate(); 
-		this.repaint(); 
-	}
-	
-	public void clearSigninComponents() {
-		this.removeAll(); // Remove all components
-		this.revalidate(); // Revalidate to apply changes
-		this.repaint(); 
-	}
-    public void showSigninComponents() {
-        setLayout(null);
-        game.getSignin().showSigninComponents();
-    }
 
 }

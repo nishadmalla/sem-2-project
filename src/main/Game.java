@@ -2,170 +2,144 @@ package main;
 
 import java.awt.Graphics;
 
-import javax.swing.JPanel;
-
+import Audio.AudioPlayer;
 import gamestates.Gamestate;
 import gamestates.Login;
 import gamestates.Menu;
 import gamestates.Playing;
 import gamestates.Signin;
+import ui.AudioOptions;
+import utilz.LoadSave;
 
 public class Game implements Runnable {
 
-    private GameWindow gameWindow;
-    private GamePanel gamePanel;
-    private Thread gameThread;
-    private final int FPS_SET = 120;
-    private final int UPS_SET = 200;
+	private GameWindow gameWindow;
+	private GamePanel gamePanel;
+	private Thread gameThread;
+	private final int FPS_SET = 120;
+	private final int UPS_SET = 200;
 
-    private Playing playing;
-    private Menu menu;
-    private Login login;
+	private Login login;
     private Signin signin;
+	private Playing playing;
+	private Menu menu;
+	private AudioPlayer audioPlayer;
+	private AudioOptions audioOptions;
 
-    public final static int TILES_DEFAULT_SIZE = 32;
-    public final static float SCALE = 2.3f;
-    public final static int TILES_IN_WIDTH = 26;
-    public final static int TILES_IN_HEIGHT = 14;
-    public final static int TILES_SIZE = (int) (TILES_DEFAULT_SIZE * SCALE);
-    public final static int GAME_WIDTH = TILES_SIZE * TILES_IN_WIDTH;
-    public final static int GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
+	public final static int TILES_DEFAULT_SIZE = 32;
+	public final static float SCALE = 2f;
+	public final static int TILES_IN_WIDTH = 26;
+	public final static int TILES_IN_HEIGHT = 14;
+	public final static int TILES_SIZE = (int) (TILES_DEFAULT_SIZE * SCALE);
+	public final static int GAME_WIDTH = TILES_SIZE * TILES_IN_WIDTH;
+	public final static int GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
 
-    public Game() {
-        gamePanel = new GamePanel(this);
-        gameWindow = new GameWindow(gamePanel);
-        gamePanel.setFocusable(true);
-        gamePanel.requestFocus();
-        
-        initClasses();
-        
-        startGameLoop();
-    }
-    
-    private void initClasses() {
-        menu = new Menu(this);
-        playing = new Playing(this);
-        login = new Login(this);
-        signin= new Signin(this);
-    }
+	public Game() {
+		initClasses();
 
-    private void startGameLoop() {
-        gameThread = new Thread(this);
-        gameThread.start();
-    }
-    
-    public void update() {
-        switch (Gamestate.state) {
-            case MENU:
-                menu.update();
-                break;
-            case PLAYING:
-                playing.update();
-                break;
-            case LOGIN:
-                    login.update();
-                break;
-            case SIGNIN:
-                
-                    signin.update();
+		gamePanel = new GamePanel(this);
+		audioPlayer= new AudioPlayer();
+		gameWindow = new GameWindow(gamePanel);
+		gamePanel.setFocusable(true);
+		gamePanel.requestFocus();
 
-                break;
-            case QUIT:
-               
-                    login.update();
-                
-                break;
-            default:
-               
-        }
-    }
+		startGameLoop();
+	}
 
-    public void render(Graphics g) {
-        switch (Gamestate.state) {
-            case MENU:
-                menu.draw(g);
-                break;
-            case PLAYING:
-                playing.draw(g);
-                break;
-            case LOGIN:
-                
-                    login.draw(g);
-              
-                break;
-            case SIGNIN:
-                
-                    signin.draw(g);
-               
-                break;
-            case QUIT:
-               
-                    login.draw(g);
-            
-                break;
-            default:
-                
-                break;
-        }
-    }
-    
-    @Override
-    public void run() {
-        double timePerFrame = 1000000000.0 / FPS_SET;
-        double timePerUpdate = 1000000000.0 / UPS_SET;
+	private void initClasses() {
+		menu = new Menu(this);
+		playing = new Playing(this);
+	}
 
-        long previousTime = System.nanoTime();
+	private void startGameLoop() {
+		gameThread = new Thread(this);
+		gameThread.start();
+	}
 
-        int frames = 0;
-        int updates = 0;
-        long lastCheck = System.currentTimeMillis();
+	public void update() {
+		switch (Gamestate.state) {
+		case MENU:
+			menu.update();
+			break;
+		case PLAYING:
+			playing.update();
+			break;
+		case OPTIONS:
+		case QUIT:
+		default:
+			System.exit(0);
+			break;
 
-        double deltaU = 0;
-        double deltaF = 0;
+		}
+	}
 
-        while (true) {
-            long currentTime = System.nanoTime();
+	public void render(Graphics g) {
+		switch (Gamestate.state) {
+		case MENU:
+			menu.draw(g);
+			break;
+		case PLAYING:
+			playing.draw(g);
+			break;
+		default:
+			break;
+		}
+	}
 
-            deltaU += (currentTime - previousTime) / timePerUpdate;
-            deltaF += (currentTime - previousTime) / timePerFrame;
-            previousTime = currentTime;
+	@Override
+	public void run() {
 
-            if (deltaU >= 1) {
-                update();
-                updates++;
-                deltaU--;
-            }
+		double timePerFrame = 1000000000.0 / FPS_SET;
+		double timePerUpdate = 1000000000.0 / UPS_SET;
 
-            if (deltaF >= 1) {
-                gamePanel.repaint();
-                frames++;
-                deltaF--;
-            }
+		long previousTime = System.nanoTime();
 
-            if (System.currentTimeMillis() - lastCheck >= 1000) {
-                lastCheck = System.currentTimeMillis();
-                System.out.println("FPS: " + frames + " | UPS: " + updates);
-                frames = 0;
-                updates = 0;
-            }
+		int frames = 0;
+		int updates = 0;
+		long lastCheck = System.currentTimeMillis();
 
-        }
-    }
+		double deltaU = 0;
+		double deltaF = 0;
 
-    public void windowFocusLost() {
-        if (Gamestate.state == Gamestate.PLAYING)
-            playing.getPlayer().resetDirBooleans();
-    }
+		while (true) {
+			long currentTime = System.nanoTime();
 
-    public Menu getMenu() {
-        return menu;
-    }
+			deltaU += (currentTime - previousTime) / timePerUpdate;
+			deltaF += (currentTime - previousTime) / timePerFrame;
+			previousTime = currentTime;
 
-    public Playing getPlaying() {
-        return playing;
-    }
+			if (deltaU >= 1) {
+				update();
+				updates++;
+				deltaU--;
+			}
 
-    public GamePanel getGamePanel() {
+			if (deltaF >= 1) {
+				gamePanel.repaint();
+				frames++;
+				deltaF--;
+			}
+
+			if (System.currentTimeMillis() - lastCheck >= 1000) {
+				lastCheck = System.currentTimeMillis();
+				System.out.println("FPS: " + frames + " | UPS: " + updates);
+				frames = 0;
+				updates = 0;
+
+			}
+		}
+
+	}
+
+	public void windowFocusLost() {
+		if (Gamestate.state == Gamestate.PLAYING)
+			playing.getPlayer().resetDirBooleans();
+	}
+
+	public Menu getMenu() {
+		return menu;
+	}
+  public GamePanel getGamePanel() {
         return gamePanel;
     }
 
@@ -176,4 +150,17 @@ public class Game implements Runnable {
     public Signin getSignin() {
         return signin;
     }
+	public Playing getPlaying() {
+		return playing;
+	}
+
+    public AudioPlayer getAudioPlayer() {
+        return audioPlayer;
+    }
+
+	public AudioOptions getAudioOptions() {
+		return audioOptions;
+	}
+
+	
 }

@@ -42,7 +42,6 @@ public class Login extends State implements Statemethods {
         menuY = (int) (40 * Game.SCALE);
     }
 
-
     private synchronized void initUI() {
         if (componentsInitialized) return;
 
