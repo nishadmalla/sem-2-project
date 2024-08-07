@@ -52,4 +52,24 @@ public class AudioOptions {
         // Volume Button
 		volumeButton.draw(g);
     }
+    public void mouseDragged(MouseEvent e) {
+		if (volumeButton.isMousePressed()) {
+			float valueBefore =volumeButton.getFloatValue();
+			volumeButton.changeX(e.getX());
+			float valueAfter = volumeButton.getFloatValue();
+			if(valueBefore !=valueAfter)
+			game.getAudioPlayer().setVolume(valueAfter);
+		}
+	}
+
+	public void mousePressed(MouseEvent e) {
+		if (isIn(e, musicButton))
+			musicButton.setMousePressed(true);
+		else if (isIn(e, sfxButton))
+			sfxButton.setMousePressed(true);
+	
+		else if (isIn(e, volumeButton))
+			volumeButton.setMousePressed(true);
+	}
+
 }
