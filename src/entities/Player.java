@@ -40,6 +40,10 @@ public class Player extends Entity {
 	private int healthBarHeight = (int) (4 * Game.SCALE);
 	private int healthBarXStart = (int) (34 * Game.SCALE);
 	private int healthBarYStart = (int) (14 * Game.SCALE);
+
+
+	private int maxHealth = 10;
+	private int currentHealth = maxHealth;
 	private int healthWidth = healthBarWidth;
 
 	private int flipX = 0;
@@ -48,8 +52,14 @@ public class Player extends Entity {
 	private boolean attackChecked;
 	private Playing playing;
 
-	private int tileY = 0;
+	private Rectangle2D.Float attackBox;
 
+	private int tileY = 0;
+	private boolean powerAttackActive;
+	private int powerAttackActiveTick;
+	private int powerGrowSpeed=15;//incease the power of player slowly
+	private int powerGrowTick;
+	
 	public Player(float x, float y, int width, int height, Playing playing) {
 		super(x, y, width, height);
 		this.playing = playing;
