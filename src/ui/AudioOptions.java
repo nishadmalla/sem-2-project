@@ -1,4 +1,6 @@
 package ui;
+
+
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -12,8 +14,9 @@ import static utilz.Constants.UI.URMButtons.*;
 import static utilz.Constants.UI.VolumeButtons.*;
 
 import gamestates.Gamestate;
+
 public class AudioOptions {
-     
+    
     private VolumeButton volumeButton;
     
 	private SoundButton musicButton, sfxButton;
@@ -61,41 +64,6 @@ public class AudioOptions {
 			game.getAudioPlayer().setVolume(valueAfter);
 		}
 	}
-    
-    public void mouseReleased(MouseEvent e) {
-		if (isIn(e, musicButton)) {
-			if (musicButton.isMousePressed()){
-				musicButton.setMuted(!musicButton.isMuted());
-				game.getAudioPlayer().toggleSongMute();
-			}
-
-		} else if (isIn(e, sfxButton)) {
-			if (sfxButton.isMousePressed()){
-				sfxButton.setMuted(!sfxButton.isMuted());
-			game.getAudioPlayer().toggleEffectMute();
-			}
-        }
-        musicButton.resetBools();
-		sfxButton.resetBools();
-		
-		volumeButton.resetBools();
-    }
-            public void mouseMoved(MouseEvent e) {
-                musicButton.setMouseOver(false);
-                sfxButton.setMouseOver(false);
-                
-                volumeButton.setMouseOver(false);
-        
-                if (isIn(e, musicButton))
-                    musicButton.setMouseOver(true);
-                else if (isIn(e, sfxButton))
-                    sfxButton.setMouseOver(true);
-                
-                else if (isIn(e, volumeButton))
-                    volumeButton.setMouseOver(true);
-            }
-        
-          
 
 	public void mousePressed(MouseEvent e) {
 		if (isIn(e, musicButton))
@@ -107,8 +75,45 @@ public class AudioOptions {
 			volumeButton.setMousePressed(true);
 	}
 
-    private boolean isIn(MouseEvent e, PauseButton b) {
+	public void mouseReleased(MouseEvent e) {
+		if (isIn(e, musicButton)) {
+			if (musicButton.isMousePressed()){
+				musicButton.setMuted(!musicButton.isMuted());
+				game.getAudioPlayer().toggleSongMute();
+			}
+
+		} else if (isIn(e, sfxButton)) {
+			if (sfxButton.isMousePressed()){
+				sfxButton.setMuted(!sfxButton.isMuted());
+			game.getAudioPlayer().toggleEffectMute();
+			}
+			}
+
+		musicButton.resetBools();
+		sfxButton.resetBools();
+		
+		volumeButton.resetBools();
+	}
+
+	public void mouseMoved(MouseEvent e) {
+		musicButton.setMouseOver(false);
+		sfxButton.setMouseOver(false);
+		
+		volumeButton.setMouseOver(false);
+
+		if (isIn(e, musicButton))
+			musicButton.setMouseOver(true);
+		else if (isIn(e, sfxButton))
+			sfxButton.setMouseOver(true);
+		
+		else if (isIn(e, volumeButton))
+			volumeButton.setMouseOver(true);
+	}
+
+	private boolean isIn(MouseEvent e, PauseButton b) {
 		return b.getBounds().contains(e.getX(), e.getY());
 	}
+
+    
 
 }

@@ -146,6 +146,7 @@ public abstract class Enemy extends Entity {
 
 
 	public boolean isActive() {
+		
 		return active;
 	}
 

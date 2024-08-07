@@ -9,6 +9,13 @@
             "name": "MainClass",
             "request": "launch",
             "mainClass": "main.MainClass",
+            "projectName": "assignemtn_9ab50c4b"
+        },
+        {
+            "type": "java",
+            "name": "MainClass",
+            "request": "launch",
+            "mainClass": "main.MainClass",
             "projectName": "sem-2-project_d95bbcbe"
         },
         {
