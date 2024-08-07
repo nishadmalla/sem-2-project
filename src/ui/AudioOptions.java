@@ -61,6 +61,19 @@ public class AudioOptions {
 			game.getAudioPlayer().setVolume(valueAfter);
 		}
 	}
+    public void mouseReleased(MouseEvent e) {
+		if (isIn(e, musicButton)) {
+			if (musicButton.isMousePressed()){
+				musicButton.setMuted(!musicButton.isMuted());
+				game.getAudioPlayer().toggleSongMute();
+			}
+
+		} else if (isIn(e, sfxButton)) {
+			if (sfxButton.isMousePressed()){
+				sfxButton.setMuted(!sfxButton.isMuted());
+			game.getAudioPlayer().toggleEffectMute();
+			}
+			}
 
 	public void mousePressed(MouseEvent e) {
 		if (isIn(e, musicButton))
