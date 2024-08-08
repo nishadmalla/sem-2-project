@@ -1,4 +1,4 @@
-package Audio;
+package audio;
 
 import java.io.IOException;
 import java.net.URL;
@@ -25,12 +25,10 @@ public class AudioPlayer {
 	public static int ATTACK_ONE = 4;
 	public static int ATTACK_TWO = 5;
 	public static int ATTACK_THREE = 6;
-	public static int PEARL = 7;
-	public static int CRABBY= 8;
 
 	private Clip[] songs, effects;
 	private int currentSongId;
-	private float volume = 1f;
+	private float volume = 0.5f;
 	private boolean songMute, effectMute;
 	private Random rand = new Random();
 
@@ -48,50 +46,34 @@ public class AudioPlayer {
 	}
 
 	private void loadEffects() {
-		String[] effectNames = { "die", "jump", "gameover", "lvlcompleted", "attack1", "attack2", "attack3","pearl","crabby"};
+		String[] effectNames = { "die", "jump", "gameover", "lvlcompleted", "attack1", "attack2", "attack3" };
 		effects = new Clip[effectNames.length];
-		for (int i = 0; i < effects.length; i++) {
-			Clip c = getClip(effectNames[i]);
-			if (c != null) {
-				effects[i] = c;
-			} else {
-				System.err.println("Error: Clip object is null for effect " + effectNames[i]);
-			}
-		}
+		for (int i = 0; i < effects.length; i++)
+			effects[i] = getClip(effectNames[i]);
+
+		updateEffectsVolume();
+
 	}
 
 	private Clip getClip(String name) {
-		System.out.println("Getting clip for " + name);
-		URL url = getClass().getResource("/audioa/" + name + ".wav");
-		if (url == null) {
-			System.err.println("Audio file not found: " + name + ".wav");
-			return null;
-		}
-	
+		URL url = getClass().getResource("/audio/" + name + ".wav");
 		AudioInputStream audio;
+
 		try {
 			audio = AudioSystem.getAudioInputStream(url);
-			if (audio == null) {
-				System.err.println("Error loading audio file: " + name + ".wav");
-				return null;
-			}
 			Clip c = AudioSystem.getClip();
 			c.open(audio);
 			return c;
-		} catch (UnsupportedAudioFileException e) {
-			System.err.println("Error loading audio file: " + name + ".wav");
-			System.err.println(e.getMessage());
-			return null;
-		} catch (IOException e) {
-			System.err.println("Error loading audio file: " + name + ".wav");
-			System.err.println(e.getMessage());
-			return null;
-		} catch (LineUnavailableException e) {
-			System.err.println("Error loading audio file: " + name + ".wav");
-			System.err.println(e.getMessage());
-			return null;
+
+		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+
+			e.printStackTrace();
 		}
+
+		return null;
+
 	}
+
 	public void setVolume(float volume) {
 		this.volume = volume;
 		updateSongVolume();
@@ -120,14 +102,11 @@ public class AudioPlayer {
 		start += rand.nextInt(3);
 		playEffect(start);
 	}
-	
+
 	public void playEffect(int effect) {
-		if (effects[effect] != null) {
+		if (effects[effect].getMicrosecondPosition() > 0)
 			effects[effect].setMicrosecondPosition(0);
-			effects[effect].start();
-		} else {
-			System.err.println("Error: Clip object is null for effect " + effect);
-		}
+		effects[effect].start();
 	}
 
 	public void playSong(int song) {
@@ -155,8 +134,6 @@ public class AudioPlayer {
 		}
 		if (!effectMute)
 			playEffect(JUMP);
-			playEffect(PEARL);
-			playEffect(CRABBY);
 	}
 
 	private void updateSongVolume() {
@@ -170,13 +147,11 @@ public class AudioPlayer {
 
 	private void updateEffectsVolume() {
 		for (Clip c : effects) {
-			if (c != null) {
-				FloatControl gainControl = (FloatControl) c.getControl(FloatControl.Type.MASTER_GAIN);
-				float range = gainControl.getMaximum() - gainControl.getMinimum();
-				float gain = (range * volume) + gainControl.getMinimum();
-				gainControl.setValue(gain);
-			}
+			FloatControl gainControl = (FloatControl) c.getControl(FloatControl.Type.MASTER_GAIN);
+			float range = gainControl.getMaximum() - gainControl.getMinimum();
+			float gain = (range * volume) + gainControl.getMinimum();
+			gainControl.setValue(gain);
 		}
+	}
 
-}
 }
