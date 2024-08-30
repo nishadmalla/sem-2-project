@@ -2,26 +2,37 @@ package main;
 
 import java.awt.Graphics;
 
-import audio.AudioPlayer;
-import gamestates.*;
+import Audio.AudioPlayer;
+import gamestates.Credits;
+import gamestates.GameOptions;
+import gamestates.Gamestate;
+import gamestates.Login;
+import gamestates.Menu;
+
+import gamestates.Playing;
+import gamestates.Signin;
 import ui.AudioOptions;
+import utilz.LoadSave;
 
 public class Game implements Runnable {
 
-    private GamePanel gamePanel;
-    private Thread gameThread;
-    private final int FPS_SET = 120;
-    private final int UPS_SET = 200;
+	private GameWindow gameWindow;
+	private GamePanel gamePanel;
+	private Thread gameThread;
+	private final int FPS_SET = 120;
+	private final int UPS_SET = 200;
 
-    private Playing playing;
-    private Menu menu;
-    private Credits credits;
-    private PlayerSelection playerSelection;
-    private GameOptions gameOptions;
-    private AudioOptions audioOptions;
-    private AudioPlayer audioPlayer;
+	private Playing playing;
+	private Menu menu;
+	private Credits credits;
+	private Login login;
+    private Signin signin;
+	
+	private GameOptions gameOptions;
+	private AudioOptions audioOptions;
+	private AudioPlayer audioPlayer;
 
-    public final static int TILES_DEFAULT_SIZE = 32;
+	public final static int TILES_DEFAULT_SIZE = 32;
     public final static float SCALE = 2f;
     public final static int TILES_IN_WIDTH = 26;
     public final static int TILES_IN_HEIGHT = 14;
@@ -29,106 +40,108 @@ public class Game implements Runnable {
     public final static int GAME_WIDTH = TILES_SIZE * TILES_IN_WIDTH;
     public final static int GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
 
-    private final boolean SHOW_FPS_UPS = true;
+	private final boolean SHOW_FPS_UPS = true;
+	public Game() {
+		System.out.println("size: " + GAME_WIDTH + " : " + GAME_HEIGHT);
+		initClasses();
 
-    public Game() {
-        System.out.println("size: " + GAME_WIDTH + " : " + GAME_HEIGHT);
-        initClasses();
-        gamePanel = new GamePanel(this);
-        new GameWindow(gamePanel);
-        gamePanel.requestFocusInWindow();
-        startGameLoop();
-    }
+		gamePanel = new GamePanel(this);
+		gameWindow = new GameWindow(gamePanel);
+		gamePanel.setFocusable(true);
+		gamePanel.requestFocus();
 
-    private void initClasses() {
-        audioOptions = new AudioOptions(this);
-        audioPlayer = new AudioPlayer();
-        menu = new Menu(this);
-        playing = new Playing(this);
-        playerSelection = new PlayerSelection(this);
-        credits = new Credits(this);
-        gameOptions = new GameOptions(this);
-    }
+		startGameLoop();
+	}
 
-    private void startGameLoop() {
-        gameThread = new Thread(this);
-        gameThread.start();
-    }
+	private void initClasses() {
+		audioOptions = new AudioOptions(this);
+		audioPlayer = new AudioPlayer();
+		menu = new Menu(this);
+		playing = new Playing(this);
+		gameOptions = new GameOptions(this);
+		login = new Login(this);
+		signin = new Signin(this);
+		
+		credits = new Credits(this); // Add this
+	}
 
-    public void update() {
-        switch (Gamestate.state) {
-            case MENU -> menu.update();
-            case PLAYER_SELECTION -> playerSelection.update();
-            case PLAYING -> playing.update();
-            case OPTIONS -> gameOptions.update();
-            case CREDITS -> credits.update();
-            case QUIT -> System.exit(0);
-        }
-    }
+	private void startGameLoop() {
+		gameThread = new Thread(this);
+		gameThread.start();
+	}
+	
+	public void update() {
+		switch (Gamestate.state) {
+			case LOGIN -> login.update();
+			case SIGNIN -> signin.update();
+			case MENU -> menu.update();
+			case PLAYING -> playing.update();
+			case OPTIONS -> gameOptions.update();
+			case CREDITS -> credits.update();
+			case QUIT -> System.exit(0);
+			default -> throw new IllegalArgumentException("Unexpected value: " + Gamestate.state);
+			
+		}
+	}
 
-    @SuppressWarnings("incomplete-switch")
-    public void render(Graphics g) {
-        switch (Gamestate.state) {
-            case MENU -> menu.draw(g);
-            case PLAYER_SELECTION -> playerSelection.draw(g);
-            case PLAYING -> playing.draw(g);
-            case OPTIONS -> gameOptions.draw(g);
-            case CREDITS -> credits.draw(g);
-        }
-    }
+	@SuppressWarnings("incomplete-switch")
+	public void render(Graphics g) {
+		switch (Gamestate.state) {
+		case LOGIN -> login.draw(g);
+		case SIGNIN -> signin.draw(g);
+		case MENU -> menu.draw(g);
+		case PLAYING -> playing.draw(g);
+		case OPTIONS -> gameOptions.draw(g);
+		case CREDITS -> credits.draw(g);
+		}
+	}
 
-    @Override
-    public void run() {
-        double timePerFrame = 1000000000.0 / FPS_SET;
-        double timePerUpdate = 1000000000.0 / UPS_SET;
+	@Override
+	public void run() {
 
-        long previousTime = System.nanoTime();
+		double timePerFrame = 1000000000.0 / FPS_SET;
+		double timePerUpdate = 1000000000.0 / UPS_SET;
 
-        int frames = 0;
-        int updates = 0;
-        long lastCheck = System.currentTimeMillis();
+		long previousTime = System.nanoTime();
 
-        double deltaU = 0;
-        double deltaF = 0;
+		int frames = 0;
+		int updates = 0;
+		long lastCheck = System.currentTimeMillis();
 
-        while (true) {
+		double deltaU = 0;
+		double deltaF = 0;
 
-            long currentTime = System.nanoTime();
+		while (true) {
+			long currentTime = System.nanoTime();
 
-            deltaU += (currentTime - previousTime) / timePerUpdate;
-            deltaF += (currentTime - previousTime) / timePerFrame;
-            previousTime = currentTime;
+			deltaU += (currentTime - previousTime) / timePerUpdate;
+			deltaF += (currentTime - previousTime) / timePerFrame;
+			previousTime = currentTime;
 
-            if (deltaU >= 1) {
+			if (deltaU >= 1) {
+				update();
+				updates++;
+				deltaU--;
+			}
 
-                update();
-                updates++;
-                deltaU--;
+			if (deltaF >= 1) {
+				gamePanel.repaint();
+				frames++;
+				deltaF--;
+			}
 
-            }
+			if (System.currentTimeMillis() - lastCheck >= 1000) {
+				lastCheck = System.currentTimeMillis();
+				System.out.println("FPS: " + frames + " | UPS: " + updates);
+				frames = 0;
+				updates = 0;
 
-            if (deltaF >= 1) {
+			}
+		}
 
-                gamePanel.repaint();
-                frames++;
-                deltaF--;
+	}
 
-            }
-
-            if (SHOW_FPS_UPS)
-                if (System.currentTimeMillis() - lastCheck >= 1000) {
-
-                    lastCheck = System.currentTimeMillis();
-                    System.out.println("FPS: " + frames + " | UPS: " + updates);
-                    frames = 0;
-                    updates = 0;
-
-                }
-
-        }
-    }
-
-    public void windowFocusLost() {
+	public void windowFocusLost() {
         if (Gamestate.state == Gamestate.PLAYING)
             playing.getPlayer().resetDirBooleans();
     }
@@ -145,9 +158,7 @@ public class Game implements Runnable {
         return credits;
     }
 
-    public PlayerSelection getPlayerSelection() {
-        return playerSelection;
-    }
+    
 
     public GameOptions getGameOptions() {
         return gameOptions;
@@ -160,4 +171,15 @@ public class Game implements Runnable {
     public AudioPlayer getAudioPlayer() {
         return audioPlayer;
     }
+
+	public GamePanel getGamePanel() {
+        return gamePanel;
+    }
+	 public Login getLogin() {
+        return login;
+    }
+	public Signin getSignin() {
+        return signin;
+    }
+	
 }

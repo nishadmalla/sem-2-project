@@ -2,8 +2,9 @@ package gamestates;
 
 import java.awt.event.MouseEvent;
 
-import audio.AudioPlayer;
+import Audio.AudioPlayer;
 import main.Game;
+
 import ui.MenuButton;
 
 public class State {
@@ -13,23 +14,31 @@ public class State {
 	public State(Game game) {
 		this.game = game;
 	}
-
+	
 	public boolean isIn(MouseEvent e, MenuButton mb) {
 		return mb.getBounds().contains(e.getX(), e.getY());
+		
 	}
+	
+	
+	
+	
 
 	public Game getGame() {
 		return game;
 	}
-
-	@SuppressWarnings("incomplete-switch")
-	public void setGamestate(Gamestate state) {
+	public void setGamestate(Gamestate state){
 		switch (state) {
-		case MENU -> game.getAudioPlayer().playSong(AudioPlayer.MENU_1);
-		case PLAYING -> game.getAudioPlayer().setLevelSong(game.getPlaying().getLevelManager().getLevelIndex());
+			case MENU ->game.getAudioPlayer().playSong(AudioPlayer.MENU_1);
+			case PLAYING ->game.getAudioPlayer().setLevelSong(game.getPlaying().getLevelManager().getLevelIndex());
+			case LOGIN -> throw new UnsupportedOperationException("Unimplemented case: " + state);
+			case OPTIONS -> throw new UnsupportedOperationException("Unimplemented case: " + state);
+			case QUIT -> throw new UnsupportedOperationException("Unimplemented case: " + state);
+			case SIGNIN -> throw new UnsupportedOperationException("Unimplemented case: " + state);
+			default -> throw new IllegalArgumentException("Unexpected value: " + state);
+			}
+		
+			Gamestate.state=state;
 		}
 
-		Gamestate.state = state;
 	}
-
-}
